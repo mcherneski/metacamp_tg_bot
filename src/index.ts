@@ -19,7 +19,7 @@ bot.start( async (ctx) => {
 })
 
 bot.command('hello', (ctx) => {
-    return ctx.reply('Hello Friend!')
+    return ctx.reply('Hello New Friend!')
 })
 
 bot.help((ctx) => {
