@@ -1,6 +1,7 @@
 {
   "name": "metacamp_tg_bot",
   "version": "1.0.0",
+  "License": "MIT",
   "description": "Telegram bot for MetaCoin",
   "main": "index.ts",
   "scripts": {
