@@ -15,12 +15,7 @@ const checkBalance = async () => {
 }
 
 bot.start( async (ctx) => {
-    return ctx.reply(
-        'Welcome to MetaCamp!',
-        Markup.keyboard([
-            Markup.button.callback('Opt-in to MetaCash', 'opt-in')
-        ])
-    )
+    return ctx.reply('Welcome to MetaCamp!')
 })
 
 bot.command('hello', (ctx) => {

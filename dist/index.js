@@ -12,9 +12,7 @@ const checkBalance = async () => {
     //TODO: Query DB and check balance
 };
 bot.start(async (ctx) => {
-    return ctx.reply('Welcome to MetaCamp!', telegraf_1.Markup.keyboard([
-        telegraf_1.Markup.button.callback('Opt-in to MetaCash', 'opt-in')
-    ]));
+    return ctx.reply('Welcome to MetaCamp!');
 });
 bot.command('hello', (ctx) => {
     return ctx.reply('Hello Friend!');
