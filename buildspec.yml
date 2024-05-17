@@ -6,11 +6,10 @@ phases:
       nodejs: 20
     commands:
       - npm install typescript
-      - npm install -g typescript
       - npm install
   build:
     commands:
-
+      - npx tsc --version
       - npm run build
 artifacts:
   files:
