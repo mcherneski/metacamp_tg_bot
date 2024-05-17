@@ -14,8 +14,11 @@ const checkBalance = async () => {
 bot.start(async (ctx) => {
     return ctx.reply('Welcome to MetaCamp!');
 });
+bot.command('versionCheck', (ctx) => {
+    return ctx.reply('Version 0.03');
+});
 bot.command('hello', (ctx) => {
-    return ctx.reply('Hello Friend!');
+    return ctx.reply('Hello New Friend!');
 });
 bot.help((ctx) => {
     // TODO: Add help message
