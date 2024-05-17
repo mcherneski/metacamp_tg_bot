@@ -5,18 +5,18 @@
   "description": "Telegram bot for MetaCoin",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "node dist/index.js"
   },
   "author": "Mike Cherneski",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^20.12.12",
-    "typescript": "^5.4.5"
+    "@types/node": "^20.12.12"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
     "eslint": "^9.2.0",
-    "telegraf": "^4.16.3"
+    "telegraf": "^4.16.3",
+    "typescript": "^5.4.5"
   }
 }
