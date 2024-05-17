@@ -19,7 +19,7 @@ bot.start( async (ctx) => {
 })
 
 bot.command('versionCheck', (ctx) => {
-    return ctx.reply('Version 0.01')
+    return ctx.reply('Version 0.02')
 })
 
 bot.command('hello', (ctx) => {
