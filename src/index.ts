@@ -1,8 +1,10 @@
 import { Telegraf, Markup } from 'telegraf'
+require('dotenv').config()
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 bot.start((ctx) => ctx.reply('Welcome!'))
+
 bot.help((ctx) => {
     ctx.reply('Send /start to sign up')
     ctx.reply('Send /hello to get a greeting')
@@ -11,6 +13,10 @@ bot.help((ctx) => {
 
 bot.command('hello', (ctx) => {
     ctx.reply('Hello friend!')
+})
+
+bot.command('send', (ctx) => {
+    
 })
 
 bot.command('keyboard', (ctx) => {
