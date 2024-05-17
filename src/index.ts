@@ -1,37 +1,70 @@
-import { Telegraf, Markup } from 'telegraf'
+import { Telegraf, Markup, Context } from 'telegraf'
+import { message, callbackQuery, channelPost } from 'telegraf/filters'
+
 require('dotenv').config()
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+global.fetch = require('node-fetch')
+const bot = new Telegraf(process.env.BOT_TOKEN as string)
 
-bot.start((ctx) => ctx.reply('Welcome!'))
+const signUp = async () => {
+    console.log('Signing up')
+}
 
-bot.help((ctx) => {
-    ctx.reply('Send /start to sign up')
-    ctx.reply('Send /hello to get a greeting')
-    ctx.reply('Send /keyboard to get a keyboard')
+const checkBalance = async () => {
+    //TODO: Query DB and check balance
+}
+
+bot.start( async (ctx) => {
+    return ctx.reply(
+        'Welcome to MetaCamp!',
+        Markup.keyboard([
+            Markup.button.callback('Opt-in to MetaCash', 'opt-in')
+        ])
+    )
 })
 
 bot.command('hello', (ctx) => {
-    ctx.reply('Hello friend!')
+    return ctx.reply('Hello Friend!')
+})
+
+bot.help((ctx) => {
+    // TODO: Add help message
+})
+
+bot.command('gm', (ctx) => {
+    return ctx.reply(
+        'gm!',
+        Markup.inlineKeyboard([
+            Markup.button.callback('Upcoming Activities', 'upcoming-activities'),
+            Markup.button.callback('Propose Activity', 'propose-activity')
+        ])
+    )
 })
 
 bot.command('send', (ctx) => {
     
 })
 
-bot.command('keyboard', (ctx) => {
-    ctx.reply(
-        'Keyboard',
-        Markup.inlineKeyboard([
-            Markup.button.callback('Button 1', 'One'),
-            Markup.button.callback('Button 2', 'Two')
-        ])
-    )
+bot.command('account', (ctx) => {
+    console.log('Getting user account info')
 })
 
-bot.on('text', (ctx) => {
-    ctx.reply('You chose the ' + (ctx.message.text === 'first' ? 'First' : 'Second') + ' option!')
+
+bot.on(message("photo", "media_group_id"), (ctx) => {
+    ctx.message.photo.forEach((photo) => {
+        //assign the poster +1 metacoin per photo posted
+    })
 })
+
+bot.on(message("video"), (ctx) => {
+    if (ctx.message.video.duration < 5)
+        {
+            //assign the poster +1 metacoin
+        }
+    console.log('Video posted')
+})
+
+
 
 bot.launch()
 
