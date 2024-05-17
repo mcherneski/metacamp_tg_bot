@@ -18,6 +18,10 @@ bot.start( async (ctx) => {
     return ctx.reply('Welcome to MetaCamp!')
 })
 
+bot.command('versionCheck', (ctx) => {
+    return ctx.reply('Version 0.01')
+})
+
 bot.command('hello', (ctx) => {
     return ctx.reply('Hello New Friend!')
 })
