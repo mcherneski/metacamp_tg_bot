@@ -3,18 +3,19 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/metacamp_tg_bot
+    overwrite: true
 hooks:
 # Install
   ApplicationStop:
-    - location: scripts/application_stop.sh
+    - location: application_stop.sh
       timeout: 300
       runas: root
   AfterIntall:
-    - location: scripts/after_install.sh
+    - location: after_install.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: scripts/application_start.sh
+    - location: application_start.sh
       timeout: 300
       runas: root
 # Validate Service
