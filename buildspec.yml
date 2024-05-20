@@ -9,7 +9,7 @@ phases:
       - npm install
   pre_build:
     commands:
-      - npm --version
+      - echo Nothing to do in the pre_build phase...
   build:
     commands:
       - npm run build
