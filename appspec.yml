@@ -3,9 +3,10 @@ os: linux
 files:
   - source: /
     destination: /home/ec2-user/metacamp_tg_bot
+    file_exists_behaviour: overwrite
   - source: /scripts
     destination: /home/ec2-user/metacamp_tg_bot/scripts
-file_exists_behaviour: overwrite
+    file_exists_behaviour: overwrite
 hooks:
 # Install
   ApplicationStop:
