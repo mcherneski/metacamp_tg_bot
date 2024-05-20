@@ -20,9 +20,5 @@ phases:
       - cp -r scripts dist/
 artifacts:
   files:
-    - '**/*'
-    - appspec.yml
-    - index.ts
-    - scripts/**/*
-    - scripts
+    - 'dist/**/*'
   discard-paths: no
