@@ -17,8 +17,7 @@ phases:
     commands:
       - cp appspec.yml dist/
       - cp -r scripts dist/
-      - find /dist -type d
-      - find /dist -type f
+      - ls -la 
 artifacts:
   files:
     - "dist/**/*"
