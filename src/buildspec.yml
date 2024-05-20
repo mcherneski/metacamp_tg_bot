@@ -1,0 +1,20 @@
+version: 0.2
+
+phases: 
+  install:
+    runtime-versions:
+      nodejs: 22.1.0
+    commands:
+      - npm install -g typescript
+      - npm install
+  pre_build:
+    commands:
+      - npm --version
+  build:
+    commands:
+      - npm run build
+artifacts:
+  files:
+    - '**/*'
+  base-directory: 'dist'
+  discard-paths: yes
