@@ -15,10 +15,10 @@ phases:
       - npm run build
   post_build:
     commands:
-      - echo "Build completed on `date`"
       - cp appspec.yml dist/
       - cp -r scripts dist/
-
+      - find /dist -type d
+      - find /dist -type f
 artifacts:
   files:
     - "dist/**/*"
