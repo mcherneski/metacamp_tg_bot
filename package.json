@@ -5,7 +5,8 @@
   "description": "Telegram bot for MetaCoin",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy",
+    "copy": "cp src/**/*.yml dist",
     "start": "node dist/index.js"
   },
   "author": "Mike Cherneski",
