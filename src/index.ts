@@ -43,6 +43,7 @@ const fetchCoordinapeData = async (query: string) => {
 
 const checkBalance = async () => {
     //TODO: Query DB and check balance
+    console.log('Check balance')
 }
 
 bot.start( async (ctx) => {
