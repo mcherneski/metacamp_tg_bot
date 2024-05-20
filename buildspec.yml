@@ -17,6 +17,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - cp appspec.yml dist/
+      - cp -r scripts dist/scripts
       - cp -r scripts dist/
 artifacts:
   files:
