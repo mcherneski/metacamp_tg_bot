@@ -3,7 +3,7 @@ version: 0.2
 phases: 
   install:
     runtime-versions:
-      nodejs: 22.1.0
+      nodejs: 20
     commands:
       - npm install -g typescript
       - npm install
@@ -13,8 +13,15 @@ phases:
   build:
     commands:
       - npm run build
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - cp appspec.yml dist/
+      - cp -r scripts dist/
 artifacts:
   files:
     - '**/*'
-  base-directory: 'dist'
+    - appspec.yml
+    - index.ts
+    - scripts/*
   discard-paths: yes
