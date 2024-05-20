@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /dist
-    destination: /home/ec2-user/metacamp_tg_bot
+    destination: /home/ec2-user/metacamp_tg_bot/dist
 hooks:
 # Install
   ApplicationStop:
