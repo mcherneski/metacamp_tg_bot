@@ -6,7 +6,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc && npm run copy",
-    "copy": "cp *.yml dist",
+    "copy": "cp -f *.yml dist",
     "start": "node dist/index.js"
   },
   "author": "Mike Cherneski",
