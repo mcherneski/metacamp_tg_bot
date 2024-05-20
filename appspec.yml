@@ -9,15 +9,15 @@ file_exists_behaviour: overwrite
 hooks:
 # Install
   ApplicationStop:
-    - location: application_stop.sh
+    - location: scripts/application_stop.sh
       timeout: 300
       runas: root
   AfterIntall:
-    - location: after_install.sh
+    - location: scripts/after_install.sh
       timeout: 300
       runas: root
   ApplicationStart:
-    - location: application_start.sh
+    - location: scripts/application_start.sh
       timeout: 300
       runas: root
 
