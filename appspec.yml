@@ -5,6 +5,10 @@ files:
     destination: /home/ec2-user/metacamp_tg_bot
 hooks:
 # Install
+  ApplicationStop:
+    - location: scripts/application_stop.sh
+      timeout: 300
+      runas: root
   AfterIntall:
     - location: scripts/after_install.sh
       timeout: 300

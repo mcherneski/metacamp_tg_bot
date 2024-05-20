@@ -5,10 +5,10 @@ SECRET_VALUE=$(aws ssm get-parameter --name "$SECRET_NAME" --with-decryption --r
 
 echo "export BOT_TOKEN=$SECRET_VALUE" >> /home/ec2-user/metacamp_tg_bot/.env
 
-echo 'run after_install.sh' >> /home/ec2-user/metacamp_tg_bot/deploy.log
+echo 'run after_install.sh' >> /home/ec2-user/metacamp_bot_logs/deploy.log
 
-echo 'cd /home/ec2-user/metacamp_tg_bot' >> /home/ec2-user/metacamp_tg_bot/deploy.log
-cd /home/ec2-user/metacamp_tg_bot >> /home/ec2-user/metacamp_tg_bot/deploy.log
+echo 'cd /home/ec2-user/metacamp_tg_bot' >> /home/ec2-user/metacamp_bot_logs/deploy.log
+cd /home/ec2-user/metacamp_tg_bot >> /home/ec2-user/metacamp_bot_logs/deploy.log
 
-echo 'npm install' >> /home/ec2-user/metacamp_tg_bot/deploy.log
-npm install >> /home/ec2-user/metacamp_tg_bot/deploy.log
+echo 'npm install' >> /home/ec2-user/metacamp_bot_logs/deploy.log
+npm install >> /home/ec2-user/metacamp_bot_logs/deploy.log

@@ -5,17 +5,60 @@ require('dotenv').config()
 
 global.fetch = require('node-fetch')
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
+const fetchCoordinapeData = async (query: string) => {
+    const url = 'https://coordinape-prod.hasura.app/v1/graphql'
+    const Query = query
 
-const signUp = async () => {
-    console.log('Signing up')
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': '82478|VpICtNupRgqJFwSjfDz3EJbrrTrEDoFNA8UHJMGK'
+
+        },
+        body: JSON.stringify({query: Query})
+    }
+
+    try {
+        const response = await fetch(url, options)
+        const data = await response.json()
+        console.log(data)
+        return data
+    } catch (error) {
+        console.error('Error fetching Coordinape data: ', error)
+    }
 }
+
+// const query = `{
+//     circles(where: {id: {_eq: "31099}}) {
+//         id
+//         name
+//         epochs {
+//             cirlce_id
+//             id
+//         }
+//     }
+// }`
+// const data = fetchCoordinapeData(query)
 
 const checkBalance = async () => {
     //TODO: Query DB and check balance
 }
 
 bot.start( async (ctx) => {
-    return ctx.reply('Welcome to MetaCamp!')
+    ctx.reply('Welcome to MetaCamp!')
+    return ctx.reply(
+        'Welcome to MetaCamp!',
+        Markup.inlineKeyboard([
+            Markup.button.callback('Sign Up', 'signup'),
+            Markup.button.callback('About MetaCamp', 'about')
+        ])
+    )
+})
+
+bot.command('signup', (ctx) => {
+    const link = 'https://app.coordinape.com/join/cb116dd8-f1de-4ed8-9fd4-90c5f5a47c8a'
+    ctx.reply(`Please sign up with this link: ${link}`)
 })
 
 bot.command('versionCheck', (ctx) => {
