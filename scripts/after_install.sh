@@ -13,5 +13,3 @@ cd /home/ec2-user/metacamp_tg_bot >> /home/ec2-user/metacamp_bot_logs/deploy.log
 echo 'npm install' >> /home/ec2-user/metacamp_bot_logs/deploy.log
 npm install >> /home/ec2-user/metacamp_bot_logs/deploy.log
 npm install pm2 -g >> /home/ec2-user/metacamp_bot_logs/deploy.log
-
-pm2 startOrRestart /home/ec2-user/metacamp-tg-bot/ecosystem.config.js >> /home/ec2-user/metacamp_bot_logs/deploy.log
