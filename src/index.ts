@@ -1,80 +1,23 @@
-import { Telegraf, Markup, Context } from 'telegraf'
+import { Telegraf, Markup, session, Context } from 'telegraf'
+// import * as tg from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 
+// const { inlineKeyboard, button, Telegraf } = tg;
 require('dotenv').config()
 
 global.fetch = require('node-fetch')
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
-const fetchCoordinapeData = async (query: string) => {
-    const url = 'https://coordinape-prod.hasura.app/v1/graphql'
-    const Query = query
-
-    const options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': '82478|VpICtNupRgqJFwSjfDz3EJbrrTrEDoFNA8UHJMGK'
-
-        },
-        body: JSON.stringify({query: Query})
-    }
-
-    try {
-        const response = await fetch(url, options)
-        const data = await response.json()
-        console.log(data)
-        return data
-    } catch (error) {
-        console.error('Error fetching Coordinape data: ', error)
-    }
-}
-
-// const query = `{
-//     circles(where: {id: {_eq: "31099}}) {
-//         id
-//         name
-//         epochs {
-//             cirlce_id
-//             id
-//         }
-//     }
-// }`
-// const data = fetchCoordinapeData(query)
-
-const checkBalance = async () => {
-    //TODO: Query DB and check balance
-    console.log('Check balance')
-}
-
+//
+// Standard Commands
+//
 bot.start( async (ctx) => {
-    ctx.reply('Welcome to MetaCamp!')
     return ctx.reply(
-        'Welcome to MetaCamp!',
-        Markup.inlineKeyboard([
-            Markup.button.callback('Sign Up', 'signup'),
-            Markup.button.callback('About MetaCamp', 'about')
-        ])
+        'Welcome to MetaCamp!'
     )
 })
 
-bot.command('signup', (ctx) => {
-    const link = 'https://app.coordinape.com/join/cb116dd8-f1de-4ed8-9fd4-90c5f5a47c8a'
-    ctx.reply(`Please sign up with this link: ${link}`)
-})
-
-bot.command('versionCheck', (ctx) => {
-    return ctx.reply('Version 0.03')
-})
-
-bot.command('hello', (ctx) => {
-    return ctx.reply('Hello New Friend!')
-})
-
-bot.help((ctx) => {
-    // TODO: Add help message
-})
-
 bot.command('gm', (ctx) => {
+    console.log('ctx object: ', ctx)
     return ctx.reply(
         'gm!',
         Markup.inlineKeyboard([
@@ -84,14 +27,22 @@ bot.command('gm', (ctx) => {
     )
 })
 
+bot.action('upcoming-activities', (ctx) => {
+    return ctx.reply('This is where we would return upcoming activities')
+})
+
 bot.command('send', (ctx) => {
     
 })
 
-bot.command('account', (ctx) => {
-    console.log('Getting user account info')
+
+bot.help((ctx) => {
+    // TODO: Add help message
 })
 
+//
+// Interaction Commands
+//
 
 bot.on(message("photo", "media_group_id"), (ctx) => {
     ctx.message.photo.forEach((photo) => {
@@ -107,6 +58,12 @@ bot.on(message("video"), (ctx) => {
     console.log('Video posted')
 })
 
+// 
+// Admin Commands
+//
+bot.command('admin-versionCheck', (ctx) => {
+    return ctx.reply('Version 0.03')
+})
 
 
 bot.launch()
