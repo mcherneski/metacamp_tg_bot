@@ -7,7 +7,7 @@ files:
   - source: /scripts
     destination: /home/ec2-user/metacamp_tg_bot/scripts
     file_exists_behaviour: OVERWRITE
-    
+file_exists_behaviour: OVERWRITE
 hooks:
 # Install
   ApplicationStop:
