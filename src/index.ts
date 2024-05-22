@@ -2,7 +2,9 @@ import { Telegraf, Markup, session, Context } from 'telegraf'
 // import * as tg from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { fetchCoordinapeData } from './utils'
-// const { inlineKeyboard, button, Telegraf } = tg;
+import { usersQuery } from './queries'
+
+
 require('dotenv').config()
 
 global.fetch = require('node-fetch')
@@ -33,42 +35,12 @@ bot.action('upcoming-activities', (ctx) => {
 })
 
 bot.command('checkAPI', async (ctx) => {
-    const query = `
-        users {
-            give_token_received
-            give_token_remaining
-            id
-            circle_id
-            profile {
-              name
-              telegram_username
-            }
-          }
-    `
-
-    const query2 = `
-        query UserQuery {
-            users {
-              give_token_received
-              give_token_remaining
-              id
-              circle_id
-              profile {
-                name
-                telegram_username
-              }
-            }
-          }
-    `
+    const query = usersQuery
 
     const data = await fetchCoordinapeData(query)
-    const stringData = JSON.stringify(data)
-    ctx.reply(stringData)
-
-    const data2 = await fetchCoordinapeData(query2)
-    const stringData2 = JSON.stringify(data2)
+    const strData = JSON.stringify(data)
     
-    return ctx.reply(stringData2)
+    return ctx.reply(strData)
 
 })
 
@@ -102,8 +74,8 @@ bot.on(message("video"), (ctx) => {
 // 
 // Admin Commands
 //
-bot.command('versionCheck', (ctx) => {
-    return ctx.reply('Version 0.04')
+bot.command('version', (ctx) => {
+    return ctx.reply('Version 0.05')
 })
 
 
