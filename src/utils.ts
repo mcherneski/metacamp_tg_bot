@@ -22,17 +22,3 @@ export const fetchCoordinapeData = async (query: string) => {
         console.error('Error fetching Coordinape data: ', error)
     }
 }
-
-
-
-// const query = `{
-//     circles(where: {id: {_eq: "31099}}) {
-//         id
-//         name
-//         epochs {
-//             cirlce_id
-//             id
-//         }
-//     }
-// }`
-// const data = fetchCoordinapeData(query)

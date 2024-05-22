@@ -2,7 +2,7 @@ import { Telegraf, Markup, session, Context } from 'telegraf'
 // import * as tg from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { fetchCoordinapeData } from './utils'
-import { usersQuery } from './queries'
+import { getAllUsers } from './queries'
 
 
 require('dotenv').config()
@@ -40,22 +40,24 @@ bot.action('upcoming-activities', (ctx) => {
 })
 
 bot.command('checkAPI', async (ctx) => {
-    const query = usersQuery
-
-    const data = await fetchCoordinapeData(query)
-    const strData = JSON.stringify(data)
-    
-    return ctx.reply(strData)
-
+    try {
+        const users = await getAllUsers()
+        return ctx.reply(users)
+    } catch {
+        return ctx.reply('Error fetching data')
+    }
 })
 
-bot.command('send', (ctx) => {
-    
+bot.command('send', async (ctx) => {
+    console.log('ctx object: ', ctx)
+
+    await ctx.reply('Send command sent')
 })
 
 
 bot.help((ctx) => {
-    // TODO: Add help message
+    console.dir(ctx, {depth: null})
+
 })
 
 //
