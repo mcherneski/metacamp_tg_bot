@@ -1,12 +1,13 @@
 export const fetchCoordinapeData = async (query: string) => {
+    require('dotenv').config()
     const url = 'https://coordinape-prod.hasura.app/v1/graphql'
     const Query = query
-
+    const apiKey = process.env.COORDINAPE_API_KEY
     const options = {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': '82478|VpICtNupRgqJFwSjfDz3EJbrrTrEDoFNA8UHJMGK'
+            'Authorization': `${apiKey}`
 
         },
         body: JSON.stringify({query: Query})

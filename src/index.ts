@@ -33,21 +33,42 @@ bot.action('upcoming-activities', (ctx) => {
 })
 
 bot.command('checkAPI', async (ctx) => {
-    const query = `{
-        circles(where: {id: {_eq: "31099}}) {
+    const query = `
+        users {
+            give_token_received
+            give_token_remaining
             id
-            name
-            epochs {
-                cirlce_id
-                id
+            circle_id
+            profile {
+              name
+              telegram_username
             }
-        }
-    }`
+          }
+    `
+
+    const query2 = `
+        query UserQuery {
+            users {
+              give_token_received
+              give_token_remaining
+              id
+              circle_id
+              profile {
+                name
+                telegram_username
+              }
+            }
+          }
+    `
 
     const data = await fetchCoordinapeData(query)
     const stringData = JSON.stringify(data)
     ctx.reply(stringData)
 
+    const data2 = await fetchCoordinapeData(query2)
+    const stringData2 = JSON.stringify(data2)
+    
+    return ctx.reply(stringData2)
 
 })
 
@@ -81,8 +102,8 @@ bot.on(message("video"), (ctx) => {
 // 
 // Admin Commands
 //
-bot.command('admin-versionCheck', (ctx) => {
-    return ctx.reply('Version 0.03')
+bot.command('versionCheck', (ctx) => {
+    return ctx.reply('Version 0.04')
 })
 
 
