@@ -82,7 +82,7 @@ bot.on(message("video"), (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.06')
+    return ctx.reply('Version 0.07')
 })
 
 
