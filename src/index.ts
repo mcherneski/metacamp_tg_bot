@@ -48,12 +48,11 @@ bot.command('checkAPI', async (ctx) => {
 
 bot.command('send', async (ctx) => {
     const message = ctx.message
-    const sender = ctx.from.username?.toString()
+    
     
     console.log('Message: ', message)
-    console.log('Sender: ', sender)
+    console.log('CTX Object: ', ctx)
 
-    ctx.reply('Message: ', message)
 })
 
 bot.on('text', (ctx) => {
