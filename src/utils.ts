@@ -1,4 +1,4 @@
-const fetchCoordinapeData = async (query: string) => {
+export const fetchCoordinapeData = async (query: string) => {
     const url = 'https://coordinape-prod.hasura.app/v1/graphql'
     const Query = query
 

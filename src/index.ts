@@ -1,7 +1,7 @@
 import { Telegraf, Markup, session, Context } from 'telegraf'
 // import * as tg from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-
+import { fetchCoordinapeData } from './utils'
 // const { inlineKeyboard, button, Telegraf } = tg;
 require('dotenv').config()
 
@@ -25,10 +25,30 @@ bot.command('gm', (ctx) => {
             Markup.button.callback('Propose Activity', 'propose-activity')
         ])
     )
+
 })
 
 bot.action('upcoming-activities', (ctx) => {
     return ctx.reply('This is where we would return upcoming activities')
+})
+
+bot.command('checkAPI', async (ctx) => {
+    const query = `{
+        circles(where: {id: {_eq: "31099}}) {
+            id
+            name
+            epochs {
+                cirlce_id
+                id
+            }
+        }
+    }`
+
+    const data = await fetchCoordinapeData(query)
+    const stringData = JSON.stringify(data)
+    ctx.reply(stringData)
+
+
 })
 
 bot.command('send', (ctx) => {
