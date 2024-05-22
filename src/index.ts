@@ -18,6 +18,11 @@ bot.start( async (ctx) => {
     )
 })
 
+bot.command('signup', (ctx) => {
+    ctx.reply('Please sign up with this link')
+    return ctx.reply('https://app.coordinape.com/join/50603e37-b3cf-4334-af9f-be3957576924')
+})
+
 bot.command('gm', (ctx) => {
     console.log('ctx object: ', ctx)
     return ctx.reply(
@@ -75,7 +80,7 @@ bot.on(message("video"), (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.05')
+    return ctx.reply('Version 0.06')
 })
 
 
