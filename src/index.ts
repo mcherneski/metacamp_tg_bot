@@ -1,7 +1,5 @@
 import { Telegraf, Markup, session, Context } from 'telegraf'
-// import * as tg from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { fetchCoordinapeData } from './utils'
 import { getAllUsers } from './queries'
 
 
@@ -49,15 +47,25 @@ bot.command('checkAPI', async (ctx) => {
 })
 
 bot.command('send', async (ctx) => {
-    console.log('ctx object: ', ctx)
+    const message = ctx.message
+    const sender = ctx.from.username?.toString()
+    
+    console.log('Message: ', message)
+    console.log('Sender: ', sender)
 
-    await ctx.reply('Send command sent')
+    ctx.reply('Message: ', message)
 })
 
+bot.on('text', (ctx) => {
+    console.log('Text message received')
+    const message = ctx.message
+    const sender = ctx.from.username?.toString()
+    console.log('Message: ', message)
+    console.log('Sender: ', sender)
+})
 
 bot.help((ctx) => {
     console.dir(ctx, {depth: null})
-
 })
 
 //
