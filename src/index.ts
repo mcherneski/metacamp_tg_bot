@@ -47,9 +47,9 @@ bot.command('checkAPI', async (ctx) => {
 })
 
 bot.command('send', async (ctx) => {
-    const message = ctx.message
+    const args = ctx.args
     console.log('++++++++++++++++++++++++++++++++++++++++')
-    console.log('Message: ', message)
+    console.log('CTX Args: ', args)
     console.log('CTX Object: ', ctx)
 
 })
