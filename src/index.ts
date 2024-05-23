@@ -7,14 +7,17 @@ require('dotenv').config()
 
 global.fetch = require('node-fetch')
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
+const menuButton = 
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    return ctx.reply(
-        'Welcome to MetaCamp!'
-    )
+    ctx.reply('Welcome to MetaCamp!')
+    
+    const menu = ctx.getChatMenuButton
+    console.log('Menu object: ', menu)
 })
+
 
 bot.command('signup', (ctx) => {
     ctx.reply('Please sign up with this link')
@@ -51,7 +54,6 @@ bot.command('send', async (ctx) => {
     const payload = ctx.payload
 
     console.log('Payload: ', payload)
-
 
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))) {
