@@ -59,10 +59,19 @@ bot.command('send', async (ctx) => {
     console.log('Payload: ', payload)
 
     if (args[0] && typeof args[0] === 'string' &&
-        args[1] && !isNaN(Number(args[1]))) {
+        
+        args[1] && !isNaN(Number(args[1]))
+        
+        ) {
             const recipient = args[0]
             const amount = args[1]
-            ctx.reply(`Sending ${amount} to ${recipient}! Would you like to send a message?`)
+            await ctx.reply(`Sending ${amount} to ${recipient}! Would you like to send a message?`)
+            
+            bot.on('text', (ctx) => {
+                const message = ctx.message.text
+                console.log('Message Received: ', message)
+                // Figure out how to send the message to the recipient. 
+            })
             
         } else {
             return ctx.reply('Invalid arguments. Please use /send @username amount')

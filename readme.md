@@ -1,5 +1,9 @@
 # MetaCamp Telegram Bot
 
+Currently Working On :
+    Send command
+
+
 ## Functionality 
 This bot is designed to facilitate the transfer of GIVE tokens between users. 
 
