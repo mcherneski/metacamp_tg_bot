@@ -1,26 +1,26 @@
 import { Telegraf, Markup, session, Context } from 'telegraf'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers } from './queries'
+import { getAllUsers, createUser, sendReward,  } from './queries'
 
 
 require('dotenv').config()
 
 global.fetch = require('node-fetch')
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
-const menuButton = 
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    ctx.reply('Welcome to MetaCamp!')
-
+    ctx.reply(
+        'Welcome to MetaCamp Coordinape Bot! \n \n' + 'Please provide an EVM Addy to continue!',
+        Markup.keyboard()
+    )
 })
 
-bot.command('menu', (ctx) => {
-        
-    const menu = ctx.getChatMenuButton
-    console.log('Menu object: ', menu)
+bot.command('help', (ctx) => {
+    ctx.reply('Available commands: \n /signup - Sign up for MetaCamp Coordinape Circle \n /send - send MetaCash to a user \n /version - Outputs bot version number')
 })
+
 
 bot.command('signup', (ctx) => {
     ctx.reply('Please sign up with this link')
@@ -28,29 +28,20 @@ bot.command('signup', (ctx) => {
 })
 
 bot.command('gm', (ctx) => {
-    console.log('ctx object: ', ctx)
-    return ctx.reply(
-        'gm!',
-        Markup.inlineKeyboard([
-            Markup.button.callback('Upcoming Activities', 'upcoming-activities'),
-            Markup.button.callback('Propose Activity', 'propose-activity')
-        ])
-    )
+    // console.log('ctx object: ', ctx)
+    // return ctx.reply(
+    //     'gm!',
+    //     Markup.inlineKeyboard([
+    //         Markup.button.callback('Upcoming Activities', 'upcoming-activities'),
+    //         Markup.button.callback('Propose Activity', 'propose-activity')
+    //     ])
+    // )
 
 })
 
-bot.action('upcoming-activities', (ctx) => {
-    return ctx.reply('This is where we would return upcoming activities')
-})
-
-bot.command('checkAPI', async (ctx) => {
-    try {
-        const users = await getAllUsers()
-        return ctx.reply(users)
-    } catch {
-        return ctx.reply('Error fetching data')
-    }
-})
+// bot.action('upcoming-activities', (ctx) => {
+//     return ctx.reply('This is where we would return upcoming activities')
+// })
 
 bot.command('send', async (ctx) => {
     const args = ctx.args
@@ -65,8 +56,8 @@ bot.command('send', async (ctx) => {
         ) {
             const recipient = args[0]
             const amount = args[1]
-            await ctx.reply(`Attach message: (type 'no' for none) `)
-            bot.on('text', (ctx) => {
+            await ctx.reply(`Send a shoutout? (reply 'no' if not) `)
+            bot.on('text', async (ctx) => {
                 
                 if (
                     ctx.message.text === 'No' || 
@@ -79,9 +70,10 @@ bot.command('send', async (ctx) => {
                 const message = ctx.message.text
                 const sender = ctx.from?.username
                 console.log('Sender: ', sender)
-                console.log('Message Received: ', message)
-                
-                ctx.telegram.sendMessage(message, recipient)
+                console.log('Message Received: ', message)             
+
+
+                await ctx.telegram.sendMessage(message, recipient)
                 return ctx.reply(`Sent ${amount} to ${recipient}!`)
                 // Figure out how to send the message to the recipient. 
             })

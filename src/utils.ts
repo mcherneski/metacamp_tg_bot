@@ -1,3 +1,5 @@
+import { Markup } from 'telegraf'
+
 export const fetchCoordinapeData = async (query: string) => {
     require('dotenv').config()
     const url = 'https://coordinape-prod.hasura.app/v1/graphql'
@@ -21,4 +23,13 @@ export const fetchCoordinapeData = async (query: string) => {
     } catch (error) {
         console.error('Error fetching Coordinape data: ', error)
     }
+}
+
+
+export const createCallbackBtn = (btnLabel: string, cbActionCommand: any) => {
+    return Markup.button.callback(btnLabel, cbActionCommand)
+}
+
+export const createNewWallet = async () => {
+    
 }
