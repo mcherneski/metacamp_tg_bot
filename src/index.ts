@@ -65,11 +65,24 @@ bot.command('send', async (ctx) => {
         ) {
             const recipient = args[0]
             const amount = args[1]
-            await ctx.reply(`Sending ${amount} to ${recipient}! Would you like to send a message?`)
-            
+            await ctx.reply(`Attach message: (type 'no' for none) `)
             bot.on('text', (ctx) => {
+                
+                if (
+                    ctx.message.text === 'No' || 
+                    ctx.message.text === '' || 
+                    ctx.message.text === 'no'
+                ) {
+                    return ctx.reply(`Sent ${amount} to ${recipient}!`)
+                }
+
                 const message = ctx.message.text
+                const sender = ctx.from?.username
+                console.log('Sender: ', sender)
                 console.log('Message Received: ', message)
+                
+                ctx.telegram.sendMessage(message, recipient)
+                return ctx.reply(`Sent ${amount} to ${recipient}!`)
                 // Figure out how to send the message to the recipient. 
             })
             
