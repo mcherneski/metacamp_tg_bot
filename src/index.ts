@@ -48,9 +48,22 @@ bot.command('checkAPI', async (ctx) => {
 
 bot.command('send', async (ctx) => {
     const args = ctx.args
-    console.log('++++++++++++++++++++++++++++++++++++++++')
-    console.log('CTX Args: ', args)
-    console.log('CTX Object: ', ctx)
+    const payload = ctx.payload
+
+    console.log('Payload: ', payload)
+
+
+    if (args[0] && typeof args[0] === 'string' &&
+        args[1] && !isNaN(Number(args[1]))) {
+            const recipient = args[0]
+            const amount = args[1]
+            ctx.reply(`Sending ${amount} to ${recipient}! Would you like to send a message?`)
+            
+        } else {
+            return ctx.reply('Invalid arguments. Please use /send @username amount')
+        }
+
+    
 
 })
 
@@ -80,7 +93,7 @@ bot.on(message("video"), (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.07')
+    return ctx.reply('Version 0.08')
 })
 
 
