@@ -13,11 +13,14 @@ const menuButton =
 //
 bot.start( async (ctx) => {
     ctx.reply('Welcome to MetaCamp!')
-    
+
+})
+
+bot.command('menu', (ctx) => {
+        
     const menu = ctx.getChatMenuButton
     console.log('Menu object: ', menu)
 })
-
 
 bot.command('signup', (ctx) => {
     ctx.reply('Please sign up with this link')
