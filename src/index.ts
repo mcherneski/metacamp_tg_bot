@@ -71,7 +71,11 @@ const stage = new Scenes.Stage<BotContext>([onboardScene], { ttl: 10 })
 bot.start( async (ctx) => {
     console.log('Start command run')
     console.log('Start command ctx: ', ctx)
-    ctx.scene
+    const scene = ctx.scene
+
+    console.log(scene)
+
+    ctx.scene.enter('onboard')
 })
 
 bot.command('signup', async (ctx) => {
