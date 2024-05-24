@@ -1,7 +1,6 @@
 import { fetchCoordinapeData } from "./utils"
 const circleId = 31099
 
-
 export const getAllUsers = async () => {
     const query = `
         query UsersQuery {
@@ -74,6 +73,9 @@ export const sendMetaCash = async (sender: string, recipient: string, amount: nu
     const query = `
 
     `
+    const data = {username: recipient, amount: amount}
+
+    return data
 }
 
 export const sendReward = async (recipient: string, amount: number, note: string) => {

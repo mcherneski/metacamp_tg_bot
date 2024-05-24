@@ -1,20 +1,72 @@
-import { Telegraf, Markup, session, Context } from 'telegraf'
-import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers, createUser, sendReward,  } from './queries'
+import { Telegraf, Markup, session, Context, Scenes, Stage } from 'telegraf'
 
+import { message, callbackQuery, channelPost } from 'telegraf/filters'
+import { getAllUsers, createUser, sendReward, sendMetaCash } from './utils/queries'
+import { createCallbackBtn } from './utils/utils'
+import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
-
 global.fetch = require('node-fetch')
+
 const bot = new Telegraf(process.env.BOT_TOKEN as string)
+
+const onboardScene = new Scenes.BaseScene<Scenes.SceneContext>('onboard')
+onboardScene.enter((ctx) => {
+    ctx.reply(`GM ${ctx.from?.username}! Welcome to MetaCamp!`)
+    ctx.reply('Do you want to create a new wallet or use an existing one?', 
+        Markup.inlineKeyboard([
+            Markup.button.callback('Create Wallet', 'create-wallet'),
+            Markup.button.callback('Use Existing Wallet', 'use-existing')
+        ])
+    )
+})
+
+onboardScene.action('create-wallet', async (ctx) => {
+    const response = await createWallet()
+    const data = await JSON.parse(response)
+    ctx.reply(`Your new wallet address is: ${data.address}`)
+    ctx.reply(`Your private key is: ${data.privateKey} \n Please keep this safe!`)
+    try {
+        await createUser(ctx.from?.username as string, data.address)
+        return ctx.scene.leave()
+    } catch (error) {
+        return ctx.reply('Error creating user. Please talk to Mike. (@MikeCski)')
+    }
+    
+})
+
+onboardScene.action('use-existing', (ctx) => {
+    ctx.reply('Please enter your wallet address')
+    bot.on('text', async (ctx) => {
+        const input = ctx.message.text
+        if (input.length === 42 && input.startsWith('0x')) {
+            const addy = input
+            const username = ctx.from?.username
+
+            try {
+                await createUser(username as string, addy)
+            } catch (error) {
+                console.error('Error creating user: ', error)
+                ctx.reply('Error creating user. Please talk to Mike. (@MikeCski)')
+            }
+        } else {
+            return ctx.reply('Invalid address. Please call the /start command again.')
+        }
+    })
+})
+
+onboardScene.leave((ctx) => ctx.reply(`Good to go! Type /help for a list of commands! Pura Vida!`))
+
+const stage = new Stage([onboardScene], { ttl: 10 })
+bot.use(session())
+bot.use(stage.middleware())
+
+
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    ctx.reply(
-        'Welcome to MetaCamp Coordinape Bot! \n \n' + 'Please provide an EVM Addy to continue!',
-        Markup.keyboard()
-    )
+    return stage.enter('onboard')
 })
 
 bot.command('help', (ctx) => {
@@ -22,26 +74,10 @@ bot.command('help', (ctx) => {
 })
 
 
-bot.command('signup', (ctx) => {
-    ctx.reply('Please sign up with this link')
-    return ctx.reply('https://app.coordinape.com/join/50603e37-b3cf-4334-af9f-be3957576924')
-})
-
 bot.command('gm', (ctx) => {
-    // console.log('ctx object: ', ctx)
-    // return ctx.reply(
-    //     'gm!',
-    //     Markup.inlineKeyboard([
-    //         Markup.button.callback('Upcoming Activities', 'upcoming-activities'),
-    //         Markup.button.callback('Propose Activity', 'propose-activity')
-    //     ])
-    // )
 
 })
 
-// bot.action('upcoming-activities', (ctx) => {
-//     return ctx.reply('This is where we would return upcoming activities')
-// })
 
 bot.command('send', async (ctx) => {
     const args = ctx.args
@@ -55,25 +91,24 @@ bot.command('send', async (ctx) => {
         
         ) {
             const recipient = args[0]
-            const amount = args[1]
-            await ctx.reply(`Send a shoutout? (reply 'no' if not) `)
+            const amount: number = Number(args[1])
+            await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
             bot.on('text', async (ctx) => {
-                
-                if (
-                    ctx.message.text === 'No' || 
-                    ctx.message.text === '' || 
-                    ctx.message.text === 'no'
-                ) {
-                    return ctx.reply(`Sent ${amount} to ${recipient}!`)
+                let message
+                if (ctx.message.text != 'No'){
+                    message = ctx.message.text
+                    await ctx.telegram.sendMessage(message, recipient)
                 }
-
-                const message = ctx.message.text
                 const sender = ctx.from?.username
                 console.log('Sender: ', sender)
-                console.log('Message Received: ', message)             
 
+                try {
+                    await sendMetaCash(sender as string, recipient, amount)
+                } catch {
+                    return ctx.reply('Error sending MetaCash. Please talk to Mike. (@MikeCski)')
+                }
+                
 
-                await ctx.telegram.sendMessage(message, recipient)
                 return ctx.reply(`Sent ${amount} to ${recipient}!`)
                 // Figure out how to send the message to the recipient. 
             })
@@ -81,9 +116,6 @@ bot.command('send', async (ctx) => {
         } else {
             return ctx.reply('Invalid arguments. Please use /send @username amount')
         }
-
-    
-
 })
 
 bot.help((ctx) => {
@@ -116,9 +148,8 @@ bot.command('version', (ctx) => {
 })
 
 
-bot.launch()
 
-console.log('Bot is running')
+bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
 process.once('SIGTERM', () => bot.stop('SIGTERM'))

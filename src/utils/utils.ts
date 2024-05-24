@@ -30,6 +30,3 @@ export const createCallbackBtn = (btnLabel: string, cbActionCommand: any) => {
     return Markup.button.callback(btnLabel, cbActionCommand)
 }
 
-export const createNewWallet = async () => {
-    
-}
