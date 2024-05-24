@@ -61,19 +61,22 @@ onboardScene.action('use-existing', (ctx) => {
         }
     })
 })
-
 onboardScene.leave((ctx) => ctx.reply(`Good to go! Type /help for a list of commands! Pura Vida!`))
-const stage = new Scenes.Stage<BotContext>([onboardScene])
+
+const stage = new Scenes.Stage<BotContext>([onboardScene], { ttl: 10 })
 
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    return ctx.scene.enter('onboard')
+    console.log('Start command run')
+    console.log('Start command ctx: ', ctx)
+    ctx.scene
 })
 
-bot.command('/signup', (ctx) => {
-    return ctx.scene.enter('onboard')
+bot.command('signup', async (ctx) => {
+    console.log('Signup command received.')
+    ctx.scene.enter('onboard')
 })
 
 bot.command('help', (ctx) => {
