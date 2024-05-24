@@ -7,21 +7,17 @@ import { createWallet } from './utils/createWallet'
 require('dotenv').config()
 global.fetch = require('node-fetch')
 
-interface SceneSession extends Scenes.SceneSessionData {
-    address?: string
-}
-
 interface BotContext extends Context {
     address?: string
     private_key?: string
-    scene: Scenes.SceneContextScene<BotContext, SceneSession>
+    scene: Scenes.SceneContextScene<BotContext>
 }
 
 const { enter, leave } = Scenes.Stage;
 
 const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN as string)
 
-const onboardScene = new Scenes.BaseScene<BotContext>('onboard')
+const onboardScene = new Scenes.BaseScene<BotContext>("onboard")
 onboardScene.enter((ctx) => {
     ctx.reply(`GM ${ctx.from?.username}! Welcome to MetaCamp!`)
     ctx.reply('Do you want to create a new wallet or use an existing one?', 
@@ -73,6 +69,10 @@ const stage = new Scenes.Stage<BotContext>([onboardScene])
 // Standard Commands
 //
 bot.start( async (ctx) => {
+    ctx.scene.enter('onboard')
+})
+
+bot.command('/signup', (ctx) => {
     ctx.scene.enter('onboard')
 })
 
@@ -156,6 +156,13 @@ bot.command('version', (ctx) => {
 
 bot.use(session())
 bot.use(stage.middleware())
+bot.use((ctx, next) => {
+    ctx.address ??= ''
+    ctx.private_key ??= ''
+    return next()
+})
+
+
 bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
