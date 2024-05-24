@@ -70,22 +70,41 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
 }
 
 export const sendMetaCash = async (sender: string, recipient: string, amount: number) => {
-    const query = `
 
+    // NEEDS WORK
+
+    const senderAPI = await getUserByUsername(recipient)
+    const senderData = await JSON.parse(senderAPI)
+    const senderId = senderData.id
+
+    const recipientAPI = await getUserByUsername(recipient)
+    const recipientData = await JSON.parse(recipientAPI)
+    const recipientId = recipientData.id
+    console.log('Recipient ID: ', recipientId)
+
+    const sendTokens = `
+        mutation SendTokens {
+            updateAllocations(
+            payload: {circle_id: ${circleId}, allocations: {note: Sent ${recipient} ${amount}!, recipient_id:${senderId} , tokens: ${amount}}}
+            )
+        }
     `
-    const data = {username: recipient, amount: amount}
-
+    const response = await fetchCoordinapeData(sendTokens)
+    const data = await JSON.stringify(response)
+    
     return data
 }
 
 export const sendReward = async (recipient: string, amount: number, note: string) => {
+    // ADMIN FUNCTION FOR REWARDING USERS FOR ACTIONS
+    // Pending sendMetaCash function working. 
+
     const mutation = `
     mutation Reward {
         updateAllocations(
           payload: {circle_id: ${circleId}, allocations: {note: ${note}, recipient_id: ${recipient}, tokens: ${amount}}}
         )
       }
-      
     `
 
     const response = await fetchCoordinapeData(mutation)

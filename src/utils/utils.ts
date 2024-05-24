@@ -24,9 +24,3 @@ export const fetchCoordinapeData = async (query: string) => {
         console.error('Error fetching Coordinape data: ', error)
     }
 }
-
-
-export const createCallbackBtn = (btnLabel: string, cbActionCommand: any) => {
-    return Markup.button.callback(btnLabel, cbActionCommand)
-}
-

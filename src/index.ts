@@ -1,16 +1,27 @@
-import { Telegraf, Markup, session, Context, Scenes, Stage } from 'telegraf'
+import { Telegraf, Markup, session, Context, Scenes } from 'telegraf'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { getAllUsers, createUser, sendReward, sendMetaCash } from './utils/queries'
-import { createCallbackBtn } from './utils/utils'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
 
-const bot = new Telegraf(process.env.BOT_TOKEN as string)
+interface SceneSession extends Scenes.SceneSessionData {
+    address?: string
+}
 
-const onboardScene = new Scenes.BaseScene<Scenes.SceneContext>('onboard')
+interface BotContext extends Context {
+    address?: string
+    private_key?: string
+    scene: Scenes.SceneContextScene<BotContext, SceneSession>
+}
+
+const { enter, leave } = Scenes.Stage;
+
+const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN as string)
+
+const onboardScene = new Scenes.BaseScene<BotContext>('onboard')
 onboardScene.enter((ctx) => {
     ctx.reply(`GM ${ctx.from?.username}! Welcome to MetaCamp!`)
     ctx.reply('Do you want to create a new wallet or use an existing one?', 
@@ -56,17 +67,13 @@ onboardScene.action('use-existing', (ctx) => {
 })
 
 onboardScene.leave((ctx) => ctx.reply(`Good to go! Type /help for a list of commands! Pura Vida!`))
-
-const stage = new Stage([onboardScene], { ttl: 10 })
-bot.use(session())
-bot.use(stage.middleware())
-
+const stage = new Scenes.Stage<BotContext>([onboardScene])
 
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    return stage.enter('onboard')
+    ctx.scene.enter('onboard')
 })
 
 bot.command('help', (ctx) => {
@@ -147,8 +154,8 @@ bot.command('version', (ctx) => {
     return ctx.reply('Version 0.08')
 })
 
-
-
+bot.use(session())
+bot.use(stage.middleware())
 bot.launch()
 
 process.once('SIGINT', () => bot.stop('SIGINT'))
