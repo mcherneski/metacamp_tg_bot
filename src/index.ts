@@ -69,11 +69,11 @@ const stage = new Scenes.Stage<BotContext>([onboardScene])
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    ctx.scene.enter('onboard')
+    return ctx.scene.enter('onboard')
 })
 
 bot.command('/signup', (ctx) => {
-    ctx.scene.enter('onboard')
+    return ctx.scene.enter('onboard')
 })
 
 bot.command('help', (ctx) => {
@@ -151,7 +151,7 @@ bot.on(message("video"), (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.08')
+    return ctx.reply('Version 0.09')
 })
 
 bot.use(session())
