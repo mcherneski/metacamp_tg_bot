@@ -48,11 +48,11 @@ export const getUserByUsername = async (username: string) => {
 export const createUser = async (telegramName: string, walletAddress: string) => {
     const date = new Date()
     console.log('Create User Query: ', date.toLocaleDateString())
-    const username = telegramName
+    const username = '@'+telegramName
     const mutation = `
     mutation CreateUser{
         createUsers(
-          payload: {circle_id: ${circleId}, users: {name: "@ + ${username}", entrance: "0", address: "${walletAddress}"}}
+          payload: {circle_id: ${circleId}, users: {name: "${username}", entrance: "0", address: "${walletAddress}"}}
         ) {
           id
           UserResponse {
