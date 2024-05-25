@@ -1,4 +1,4 @@
-import { Telegraf, Markup, session, Context, Scenes } from 'telegraf'
+import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { getAllUsers, createUser, sendReward, sendMetaCash } from './utils/queries'
@@ -7,63 +7,51 @@ import { createWallet } from './utils/createWallet'
 require('dotenv').config()
 global.fetch = require('node-fetch')
 
-interface BotContext extends Context {
-    address?: string
-    private_key?: string
-    scene: Scenes.SceneContextScene<BotContext>
+interface AppSession extends Scenes.WizardSession {
+    address: string
+    privateKey: number
 }
 
-const { enter, leave } = Scenes.Stage;
+interface AppContext extends Context {
+    address: string
+    privateKey: string
+    // ctx.mycontextprop
+    session: AppSession
 
-const bot = new Telegraf<BotContext>(process.env.BOT_TOKEN as string)
+    scene: Scenes.SceneContextScene<AppContext, Scenes.WizardSessionData>
 
-const onboardScene = new Scenes.BaseScene<BotContext>("onboard")
-onboardScene.enter((ctx) => {
-    ctx.reply(`GM ${ctx.from?.username}! Welcome to MetaCamp!`)
-    ctx.reply('Do you want to create a new wallet or use an existing one?', 
-        Markup.inlineKeyboard([
-            Markup.button.callback('Create Wallet', 'create-wallet'),
-            Markup.button.callback('Use Existing Wallet', 'use-existing')
-        ])
-    )
-})
+    wizard: Scenes.WizardContextWizard<AppContext>
+}
 
-onboardScene.action('create-wallet', async (ctx) => {
-    const response = await createWallet()
-    const data = await JSON.parse(response)
-    ctx.reply(`Your new wallet address is: ${data.address}`)
-    ctx.reply(`Your private key is: ${data.privateKey} \n Please keep this safe!`)
-    try {
-        await createUser(ctx.from?.username as string, data.address)
-        return ctx.scene.leave()
-    } catch (error) {
-        return ctx.reply('Error creating user. Please talk to Mike. (@MikeCski)')
+
+const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
+const stepHandler = new Composer<AppContext>()
+
+const onboard = new Scenes.WizardScene<AppContext>(
+    'onboard',
+    async (ctx) => {
+        await ctx.reply('How is your day?')
+        return ctx.wizard.next()
+    },
+    stepHandler,
+    async (ctx) => {
+        await ctx.reply('What is your wallet address?')
+        return ctx.wizard.next()
+    },
+    async (ctx) => {
+        await ctx.reply('Ok done!')
+        return await ctx.scene.leave()
     }
-    
+)
+
+const stage = new Scenes.Stage<AppContext>([onboard])
+
+bot.use(session())
+bot.use(stage.middleware())
+
+bot.command('register', async (ctx) => {
+    ctx.scene.enter('onboard')
 })
-
-onboardScene.action('use-existing', (ctx) => {
-    ctx.reply('Please enter your wallet address')
-    bot.on('text', async (ctx) => {
-        const input = ctx.message.text
-        if (input.length === 42 && input.startsWith('0x')) {
-            const addy = input
-            const username = ctx.from?.username
-
-            try {
-                await createUser(username as string, addy)
-            } catch (error) {
-                console.error('Error creating user: ', error)
-                ctx.reply('Error creating user. Please talk to Mike. (@MikeCski)')
-            }
-        } else {
-            return ctx.reply('Invalid address. Please call the /start command again.')
-        }
-    })
-})
-onboardScene.leave((ctx) => ctx.reply(`Good to go! Type /help for a list of commands! Pura Vida!`))
-
-const stage = new Scenes.Stage<BotContext>([onboardScene], { ttl: 10 })
 
 //
 // Standard Commands
