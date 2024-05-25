@@ -96,7 +96,8 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
 export const balanceCheck = async (username: string, amount: number) => {
     const userBalance = await getUserByUsername(username)
     const data = await JSON.parse(userBalance)
-    const balance = data.give_token_remaining
+    console.log('User Balance Data: ', data)
+    const balance = data.users[0].give_token_remaining
 
     console.log(`${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`)
 
