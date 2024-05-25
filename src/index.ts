@@ -33,7 +33,7 @@ bot.start( async (ctx) => {
     
     console.log('\n New user workflow triggered: ', user)
     const randomNumber = Math.floor(Math.random() * 500)
-    try {
+    // try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
         // Store in session
@@ -53,7 +53,14 @@ bot.start( async (ctx) => {
         
         
         // console.log('Data test Array: ', newUserData.createdUsers[0].id)
-        console.log('Data test Object: ', newUserData.data.createdUsers[0].id)
+        // console.log('Data test Object: ', newUserData.data.createdUsers[0].id)
+        console.log('Data Test 01: ', newUserData.data.createdUsers[0].id)
+        console.log('Data Test 1.1: ', newUserData.data.createdUsers.id)
+        console.log('Data Test 02: ', newUserData.data)
+        console.log('Data Test 03: ', newUserData.createdUsers[0].id)
+        console.log('Data Test 04: ', newUserData.createdUsers.id)
+        
+
 
         ctx.userId = newUserData.data.createdUsers[0].id
 
@@ -63,10 +70,10 @@ bot.start( async (ctx) => {
 
         return ctx.reply('Your account has been created! \n Type /help for a list of commands!')
     
-    } catch (error) {
-        console.log('Error creating account: ', error)
-        return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
-    }
+    // } catch (error) {
+    //     console.log('Error creating account: ', error)
+    //     return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
+    // }
 })
 
 bot.command('help', (ctx) => {
