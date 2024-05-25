@@ -1,7 +1,7 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 // import { Postgres } from '@telegraf/session/pg'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers, createUser, sendReward, sendToken } from './utils/queries'
+import { getAllUsers, createUser, sendReward, sendToken, getUserByUsername } from './utils/queries'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
@@ -29,7 +29,7 @@ bot.start( async (ctx) => {
     // if (ctx.session.address && ctx.session.privateKey) {
     //     return ctx.reply('You are already registered! Type /help for a list of commands.')
     // }
-    
+
     const user = ctx.from.username?.toString() || ''
     // if (!ctx.from.username) return ctx.reply('Error getting username')
     await ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
@@ -94,7 +94,12 @@ bot.command('gm', (ctx) => {
 })
 
 bot.command('balance', async (ctx) => {
-
+    const user = ctx.session.userName
+    const response = await getUserByUsername(user)
+    const tokenData = await JSON.parse(response)
+    console.log('Balance Command token data: ', tokenData)
+    const tokensRemaining = tokenData.give_token_remaining
+    return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)
 })
 
 bot.command('showpk', async (ctx) => {
@@ -139,11 +144,11 @@ bot.command('send', async (ctx) => {
                 try {
                     await sendToken(sender as string, recipient, amount)
                 } catch {
-                    return ctx.reply('Error sending MetaCash. Please talk to Mike. (@MikeCski)')
+                    return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
                 }
                 
 
-                return ctx.reply(`Sent ${amount} to ${recipient}!`)
+                return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
                 // Figure out how to send the message to the recipient. 
             })
             
