@@ -110,18 +110,10 @@ bot.command('balance', async (ctx) => {
 })
 
 bot.command('showpk', async (ctx) => {
-    ctx.reply('Do you really want me to show you your private key? (reply "yes" or "no")')
-    bot.on('text', async (ctx) => {
-        if (ctx.message.text === 'yes') {
-            ctx.reply('Do not share your private key with anyone!')
-            ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
-            return ctx.reply('Please delete the message with the private key after you have copied it!')
-        } else if (ctx.message.text === 'no') {
-            return ctx.reply('Private key not shown.')
-        } else {
-            return ctx.reply('Invalid response. Private key not shown.')
-        }
-    })
+    ctx.reply('Do not share your private key with anyone!')
+    ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
+    return ctx.reply('Please delete the message with the private key after you have copied it!')
+
 })
 
 
