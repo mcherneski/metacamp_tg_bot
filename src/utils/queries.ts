@@ -62,12 +62,12 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
         }
       }
     `
-
+    console.log('Create User Mutation: ', mutation)
     const response = await fetchCoordinapeData(mutation)
-    console.log('Create User Response: ', response)
+    
 
     const data = await JSON.stringify(response)
-
+    console.log('Create User Response: ', data)
     return data
 }
 
