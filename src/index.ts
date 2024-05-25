@@ -1,7 +1,7 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 // import { Postgres } from '@telegraf/session/pg'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers, createUser, sendReward, sendToken, getUserByUsername } from './utils/queries'
+import { getAllUsers, createUser, sendReward, sendToken, getUserById } from './utils/queries'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
@@ -94,9 +94,9 @@ bot.command('gm', (ctx) => {
 })
 
 bot.command('balance', async (ctx) => {
-    const user = ctx.session.userName
-    const response = await getUserByUsername(user)
+    const response = await getUserById(ctx.session.userId.toString())
     const tokenData = await JSON.parse(response)
+
     console.log('Balance Command token data: ', tokenData)
     const tokensRemaining = tokenData.give_token_remaining
     return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)

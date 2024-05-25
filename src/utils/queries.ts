@@ -21,10 +21,10 @@ export const getAllUsers = async () => {
     return data
 }
 
-export const getUserByUsername = async (username: string) => {
+export const getUserById = async (username: string) => {
     const query = `
-        query GetUserByUsername {
-            users(where: {profile: {name: {_eq: ${username}}}}) {
+        query GetUserById($_eq: bigint = "296490") {
+            users(where: {id: {_eq: $_eq}}) {
             profile {
                 address
                 created_at
@@ -79,15 +79,16 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
 export const sendToken = async (sender: string, recipient: string, amount: number) => {
 
     // NEEDS WORK
-
-    const senderAPI = await getUserByUsername(recipient)
+    // Get Recipient user ID
+    
+    const senderAPI = await getUserById(recipient)
     const senderData = await JSON.parse(senderAPI)
     const senderId = senderData.id
 
-    const recipientAPI = await getUserByUsername(recipient)
-    const recipientData = await JSON.parse(recipientAPI)
-    const recipientId = recipientData.id
-    console.log('Recipient ID: ', recipientId)
+    // const recipientAPI = await getUserByUsername(recipient)
+    // const recipientData = await JSON.parse(recipientAPI)
+    // const recipientId = recipientData.id
+    // console.log('Recipient ID: ', recipientId)
 
     const sendTokens = `
         mutation SendTokens {
