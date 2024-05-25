@@ -1,7 +1,14 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 // import { Postgres } from '@telegraf/session/pg'
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers, createUser, sendReward, sendToken, getUserById } from './utils/queries'
+import { 
+    getAllUsers,
+    createUser,
+    balanceCheck,
+    sendReward,
+    sendToken,
+    getUserById 
+} from './utils/queries'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
@@ -138,11 +145,15 @@ bot.command('send', async (ctx) => {
                     message = ctx.message.text
                     await ctx.telegram.sendMessage(message, recipient)
                 }
-                const sender = ctx.from?.username
+                const sender = ctx.session.userName
                 console.log('Sender: ', sender)
 
                 try {
-                    await sendToken(sender as string, recipient, amount)
+
+                    const canSendAmount : boolean = await balanceCheck(sender, amount)
+                    if (!canSendAmount){return ctx.reply('You do not have enough Vibes to send!')}
+
+                    await sendToken(sender, recipient, amount)
                 } catch {
                     return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
                 }

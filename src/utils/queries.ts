@@ -21,6 +21,23 @@ export const getAllUsers = async () => {
     return data
 }
 
+export const getUserByUsername = async (username: string) => {
+    const query = `
+        query GetUserByUsername {
+            users(where: {profile: {name: {_eq: "_Mikey"}}}) {
+            id
+            give_token_received
+            give_token_remaining
+            }
+        }
+      `
+
+      const response = await fetchCoordinapeData(query)
+      const data = await JSON.stringify(response)
+      
+      return data
+}
+
 export const getUserById = async (username: string) => {
     const query = `
         query GetUserById($_eq: bigint = "296490") {
@@ -76,32 +93,52 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
     return data
 }
 
-export const sendToken = async (sender: string, recipient: string, amount: number) => {
+export const balanceCheck = async (username: string, amount: number) => {
+    const userBalance = await getUserByUsername(username)
+    const data = await JSON.parse(userBalance)
+    const balance = data.give_token_remaining
 
-    // NEEDS WORK
-    // Get Recipient user ID
-    
-    const senderAPI = await getUserById(recipient)
-    const senderData = await JSON.parse(senderAPI)
-    const senderId = senderData.id
+    console.log(`${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`)
+
+    if (balance >= amount) {
+        return true
+    }
+
+    return false
+}
+
+export const sendToken = async (sender: string, recipient: string, amount: number) => {
+    // Send amounts already verified in the bot code. 
+
+    // Get sender information
+    const senderData = await getUserByUsername(sender)
+    console.log(`Sender Data: ${senderData}`)
+
+    const recipientData = await getUserByUsername(recipient)
+    console.log(`Recipient Data: ${recipientData}`)
+
+    // const currentSenderBalance = senderData.give_token_remaining
 
     // const recipientAPI = await getUserByUsername(recipient)
     // const recipientData = await JSON.parse(recipientAPI)
     // const recipientId = recipientData.id
     // console.log('Recipient ID: ', recipientId)
 
-    const sendTokens = `
-        mutation SendTokens {
-            updateAllocations(
-            payload: {circle_id: ${circleId}, allocations: {note: Sent ${recipient} ${amount}!, recipient_id:${senderId} , tokens: ${amount}}}
-            )
-        }
-    `
-    const response = await fetchCoordinapeData(sendTokens)
-    const data = await JSON.stringify(response)
+    // const sendTokens = `
+    //     mutation SendTokens {
+    //         updateAllocations(
+    //         payload: {circle_id: ${circleId}, allocations: {note: Sent ${recipient} ${amount}!, recipient_id:${senderId} , tokens: ${amount}}}
+    //         )
+    //     }
+    // `
+    // const response = await fetchCoordinapeData(sendTokens)
+    // const data = await JSON.stringify(response)
     
-    return data
+    // return data
+    return 'Send Tokens Function not working yet.'
 }
+
+
 
 export const sendReward = async (recipient: string, amount: number, note: string) => {
     // ADMIN FUNCTION FOR REWARDING USERS FOR ACTIONS
