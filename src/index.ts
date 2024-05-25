@@ -29,11 +29,11 @@ const stepHandler = new Composer<AppContext>()
 
 const onboard = new Scenes.WizardScene<AppContext>(
     'onboard',
+    stepHandler,
     async (ctx) => {
         await ctx.reply('How is your day?')
         return ctx.wizard.next()
     },
-    stepHandler,
     async (ctx) => {
         await ctx.reply('What is your wallet address?')
         return ctx.wizard.next()
