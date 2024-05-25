@@ -59,10 +59,10 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
             id
             created_at
             circle_id
-          }
-          profile {
-            id
-            name
+            profile {
+                id
+                name
+              }
           }
         }
       }
