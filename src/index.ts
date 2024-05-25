@@ -1,7 +1,7 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-import { getAllUsers, createUser, sendReward, sendMetaCash } from './utils/queries'
+import { getAllUsers, createUser, sendReward, sendToken } from './utils/queries'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
@@ -39,7 +39,9 @@ bot.start( async (ctx) => {
         // Store in session
         ctx.address = walletData.address
         ctx.privateKey = walletData.privateKey
-        
+        console.log('Wallet Data: ', walletData)
+        console.log('Context Address Data: ', ctx.address)
+
         const newUser = await createUser(user, ctx.address)
         const newUserData = await JSON.parse(newUser)
 
@@ -93,7 +95,7 @@ bot.command('send', async (ctx) => {
                 console.log('Sender: ', sender)
 
                 try {
-                    await sendMetaCash(sender as string, recipient, amount)
+                    await sendToken(sender as string, recipient, amount)
                 } catch {
                     return ctx.reply('Error sending MetaCash. Please talk to Mike. (@MikeCski)')
                 }

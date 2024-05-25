@@ -71,7 +71,7 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
     return data
 }
 
-export const sendMetaCash = async (sender: string, recipient: string, amount: number) => {
+export const sendToken = async (sender: string, recipient: string, amount: number) => {
 
     // NEEDS WORK
 
