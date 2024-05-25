@@ -25,6 +25,11 @@ bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 
 //
 
 bot.start( async (ctx) => {
+
+    // if (ctx.session.address && ctx.session.privateKey) {
+    //     return ctx.reply('You are already registered! Type /help for a list of commands.')
+    // }
+    
     const user = ctx.from.username?.toString() || ''
     // if (!ctx.from.username) return ctx.reply('Error getting username')
     await ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
