@@ -41,13 +41,16 @@ bot.start( async (ctx) => {
         ctx.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.address)
         console.log('Context Private Key Data: ', ctx.privateKey)
-        
+
         const newUser = await createUser(user, ctx.address)
         const newUserData = await JSON.parse(newUser)
 
         console.log('Coordinape New User Data: ', newUserData)
 
-        ctx.userId = newUserData.createdUsers[0].id
+        console.log('Data test Array: ', newUserData.createdUsers[0].id)
+        console.log('Data test Object: ', newUserData.createdUsers.id)
+
+        ctx.userId = newUserData.createdUsers.id
 
         console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
 

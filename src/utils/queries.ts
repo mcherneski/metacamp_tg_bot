@@ -46,7 +46,7 @@ export const getUserByUsername = async (username: string) => {
 }
 
 export const createUser = async (telegramName: string, walletAddress: string) => {
-    const username = '@' + telegramName
+    const username = telegramName
     const mutation = `
     mutation CreateUser{
         createUsers(
