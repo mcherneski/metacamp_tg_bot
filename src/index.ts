@@ -40,7 +40,8 @@ bot.start( async (ctx) => {
         ctx.address = walletData.address
         ctx.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.address)
-
+        console.log('Context Private Key Data: ', ctx.privateKey)
+        
         const newUser = await createUser(user, ctx.address)
         const newUserData = await JSON.parse(newUser)
 
