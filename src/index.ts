@@ -32,7 +32,7 @@ bot.start( async (ctx) => {
     await ctx.reply('Hold tight while we create your account...')
     
     console.log('\n New user workflow triggered: ', user)
-    
+    const randomNumber = Math.floor(Math.random() * 500)
     try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
@@ -41,7 +41,7 @@ bot.start( async (ctx) => {
         ctx.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.address)
         console.log('Context Private Key Data: ', ctx.privateKey)
-        const testName = '@TestUser01'
+        const testName = '@TestUser' + randomNumber
         const newUser = await createUser(testName, ctx.address)
         const newUserData = await JSON.parse(newUser)
 
