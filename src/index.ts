@@ -46,7 +46,7 @@ bot.start( async (ctx) => {
 
         console.log('Coordinape New User Data: ', newUserData)
 
-        ctx.userId = newUserData.createdUsers.id
+        ctx.userId = newUserData.createdUsers[0].id
 
         console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
 
