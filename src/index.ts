@@ -39,7 +39,6 @@ bot.start( async (ctx) => {
         // Store in session
         ctx.address = walletData.address
         ctx.privateKey = walletData.privateKey
-        console.log('Wallet Data: ', walletData)
         console.log('Context Address Data: ', ctx.address)
 
         const newUser = await createUser(user, ctx.address)

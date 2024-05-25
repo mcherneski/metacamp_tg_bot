@@ -47,9 +47,9 @@ export const getUserByUsername = async (username: string) => {
 
 export const createUser = async (telegramName: string, walletAddress: string) => {
     const mutation = `
-    mutation CreateUser($circle_id: Int = 31099, $address: String = "", $name: String = "") {
+    mutation CreateUser{
         createUsers(
-          payload: {circle_id: $circle_id, users: {name: ${telegramName}, entrance: "0", address: ${walletAddress}}}
+          payload: {circle_id: ${circleId}, users: {name: ${telegramName}, entrance: "0", address: ${walletAddress}}}
         ) {
           id
           UserResponse {
