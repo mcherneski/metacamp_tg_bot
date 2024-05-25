@@ -49,7 +49,7 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
     const mutation = `
     mutation CreateUser{
         createUsers(
-          payload: {circle_id: ${circleId}, users: {name: ${telegramName}, entrance: "0", address: ${walletAddress}}}
+          payload: {circle_id: ${circleId}, users: {name: "${telegramName}", entrance: "0", address: "${walletAddress}"}}
         ) {
           id
           UserResponse {
