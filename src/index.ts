@@ -41,12 +41,15 @@ bot.start( async (ctx) => {
         ctx.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.address)
         console.log('Context Private Key Data: ', ctx.privateKey)
-
+        
         const newUser = await createUser(user, ctx.address)
         const newUserData = await JSON.parse(newUser)
 
         console.log('Coordinape New User Data: ', newUserData)
-
+        if (newUserData.errors) {
+            console.log('Error creating user: ', newUserData.errors)
+            return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
+        }
         console.log('Data test Array: ', newUserData.createdUsers[0].id)
         console.log('Data test Object: ', newUserData.createdUsers.id)
 
