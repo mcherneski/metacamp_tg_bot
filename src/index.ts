@@ -133,11 +133,11 @@ bot.command('send', async (ctx) => {
         const recipient = args[0]
         const amount: number = Number(args[1])
         const message = args[2]
-        console.log('Send command message: ', message)
+        // console.log('Send command message: ', message)
 
-        if (message) {
-            await ctx.telegram.sendMessage(recipient, message)
-        }
+        // if (message) {
+        //     await ctx.telegram.sendMessage(recipient, message)
+        // }
         // await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
         // bot.on('text', async (ctx) => {
         //     let message
