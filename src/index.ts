@@ -34,7 +34,7 @@ bot.start( async (ctx) => {
     
     try {
         const wallet = await createWallet()
-        const walletData = JSON.parse(wallet)
+        const walletData = await JSON.parse(wallet)
         
         console.log(`${user} Wallet data: `, walletData)
 
@@ -42,7 +42,7 @@ bot.start( async (ctx) => {
         ctx.privateKey = walletData.privateKey
         
         const newUser = await createUser(user as string, ctx.address)
-        const newUserData = JSON.parse(newUser)
+        const newUserData = await JSON.parse(newUser)
 
         ctx.userId = newUserData.createdUsers[0].id
 
