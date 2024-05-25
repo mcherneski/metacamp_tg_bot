@@ -60,7 +60,7 @@ bot.start( async (ctx) => {
 })
 
 bot.command('help', (ctx) => {
-    ctx.reply('Available commands: \n /signup - Sign up for MetaCamp Coordinape Circle \n /send - send MetaCash to a user \n /version - Outputs bot version number')
+    ctx.reply('Available commands: ')
 })
 
 

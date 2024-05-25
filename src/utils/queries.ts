@@ -47,23 +47,25 @@ export const getUserByUsername = async (username: string) => {
 
 export const createUser = async (telegramName: string, walletAddress: string) => {
     const mutation = `
-        mutation CreateUser {
-            createUsers(
-            payload: {circle_id: ${circleId}, users: {address: ${walletAddress}, name: ${telegramName}, starting_tokens: 100, entrance: "0"}}
-            ) {
+    mutation CreateUser($circle_id: Int = 31099, $address: String = "", $name: String = "") {
+        createUsers(
+          payload: {circle_id: $circle_id, users: {name: ${telegramName}, entrance: "0", address: ${walletAddress}}}
+        ) {
+          id
+          UserResponse {
             id
-            UserResponse {
-                id
-                give_token_remaining
-                created_at
-                circle_id
-                starting_tokens
-            }
-            }
+            give_token_remaining
+            created_at
+            circle_id
+            starting_tokens
+          }
         }
+      }
     `
 
     const response = await fetchCoordinapeData(mutation)
+    console.log('Create User Response: ', response)
+
     const data = await JSON.stringify(response)
 
     return data
