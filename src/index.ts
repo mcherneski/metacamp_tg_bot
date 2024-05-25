@@ -50,7 +50,9 @@ bot.start( async (ctx) => {
             console.log('Error creating user: ', newUserData.errors)
             return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
         }
-        console.log('Data test Array: ', newUserData.createdUsers[0].id)
+        
+        
+        // console.log('Data test Array: ', newUserData.createdUsers[0].id)
         console.log('Data test Object: ', newUserData.createdUsers.id)
 
         ctx.userId = newUserData.createdUsers.id
