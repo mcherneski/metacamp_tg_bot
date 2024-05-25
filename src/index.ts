@@ -18,57 +18,38 @@ interface AppContext extends Context {
     // ctx.mycontextprop
     session: AppSession
 
-    scene: Scenes.SceneContextScene<AppContext, Scenes.WizardSessionData>
-
-    wizard: Scenes.WizardContextWizard<AppContext>
 }
-
-
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-const stepHandler = new Composer<AppContext>()
-
-const onboard = new Scenes.WizardScene<AppContext>(
-    'onboard',
-    stepHandler,
-    async (ctx) => {
-        await ctx.reply('How is your day?')
-        return ctx.wizard.next()
-    },
-    async (ctx) => {
-        await ctx.reply('What is your wallet address?')
-        return ctx.wizard.next()
-    },
-    async (ctx) => {
-        await ctx.reply('Ok done!')
-        return await ctx.scene.leave()
-    }
-)
-
-const stage = new Scenes.Stage<AppContext>([onboard])
-
 bot.use(session())
-bot.use(stage.middleware())
-
-bot.command('register', async (ctx) => {
-    ctx.scene.enter('onboard')
-})
 
 //
 // Standard Commands
 //
 bot.start( async (ctx) => {
-    console.log('Start command run')
-    console.log('Start command ctx: ', ctx)
-    const scene = ctx.scene
+    const user = ctx.from?.username
+    ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
+    ctx.reply('Hold tight while we create your account...')
+    
+    console.log('New user joined: ', user)
+    
+    try {
+        const wallet = await createWallet()
+        const walletData = JSON.parse(wallet)
+    
+        ctx.address = walletData.address
+        ctx.privateKey = walletData.privateKey
+        
+        const newUser = await createUser(user as string, ctx.address)
 
-    console.log(scene)
+        console.log('New Coordinape user created! ', newUser)
 
-    ctx.scene.enter('onboard')
-})
+        return ctx.reply('Your account has been created! \n Type /help for a list of commands!')
+    
+    } catch {
+        return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
+    }
+    
 
-bot.command('signup', async (ctx) => {
-    console.log('Signup command received.')
-    ctx.scene.enter('onboard')
 })
 
 bot.command('help', (ctx) => {
