@@ -15,9 +15,9 @@ interface AppSession extends Scenes.WizardSession {
 interface AppContext extends Context {
     address: string
     privateKey: string
-    // ctx.mycontextprop
+    userId: number
+    
     session: AppSession
-
 }
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
 bot.use(session())
@@ -40,6 +40,11 @@ bot.start( async (ctx) => {
         ctx.privateKey = walletData.privateKey
         
         const newUser = await createUser(user as string, ctx.address)
+        const newUserData = JSON.parse(newUser)
+
+        ctx.userId = newUserData.createdUsers[0].id
+
+        console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
 
         console.log('New Coordinape user created! ', newUser)
 
