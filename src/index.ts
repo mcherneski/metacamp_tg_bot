@@ -53,8 +53,8 @@ bot.start( async (ctx) => {
         }
         
              
-        ctx.userId = newUserData.data.createUsers[0].id
-        ctx.userName = newUserData.data.createUsers[0].profile.name
+        ctx.userId = newUserData.data.createUsers[0].UserResponse.profile.id
+        ctx.userName = newUserData.data.createUsers[0].UserResponse.profile.name
 
         console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
 
@@ -88,7 +88,8 @@ bot.command('account', async (ctx) => {
 })
 
 bot.command('gm', (ctx) => {
-
+    // ctx.sendPhoto('')
+    return ctx.reply('gm!')
 })
 
 bot.command('balance', async (ctx) => {
