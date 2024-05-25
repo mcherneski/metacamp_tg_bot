@@ -120,6 +120,8 @@ bot.command('showpk', async (ctx) => {
 bot.command('send', async (ctx) => {
     const args = ctx.args
     const payload = ctx.payload
+    console.log('Send args: ', args)
+    console.log('Send payload: ', payload)
 
     console.log('Payload: ', payload)
 
@@ -130,13 +132,19 @@ bot.command('send', async (ctx) => {
         ) {
             const recipient = args[0]
             const amount: number = Number(args[1])
-            await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
-            bot.on('text', async (ctx) => {
-                let message
-                if (ctx.message.text != 'No'){
-                    message = ctx.message.text
-                    await ctx.telegram.sendMessage(message, recipient)
-                }
+            const message = args[2]
+            console.log('Send command message: ', message)
+
+            if (message) {
+                await ctx.telegram.sendMessage(recipient, message)
+            }
+            // await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
+            // bot.on('text', async (ctx) => {
+            //     let message
+            //     if (ctx.message.text != 'No'){
+            //         message = ctx.message.text
+            //         await ctx.telegram.sendMessage(message, recipient)
+            //     }
                 const sender = ctx.session.userName
                 console.log('Sender: ', sender)
 
