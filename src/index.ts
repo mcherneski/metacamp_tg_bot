@@ -52,8 +52,9 @@ bot.start( async (ctx) => {
 
         return ctx.reply('Your account has been created! \n Type /help for a list of commands!')
     
-    } catch {
-        return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
+    } catch (error) {
+        console.log('Error creating account: ', error)
+        return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
     }
 })
 
