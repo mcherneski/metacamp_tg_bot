@@ -16,6 +16,7 @@ interface AppContext extends Context {
     address: string
     privateKey: string
     userId: number
+    userName: string
     
     session: AppSession
 }
@@ -33,7 +34,7 @@ bot.start( async (ctx) => {
     
     console.log('\n New user workflow triggered: ', user)
     const randomNumber = Math.floor(Math.random() * 500)
-    // try {
+    try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
         // Store in session
@@ -51,12 +52,9 @@ bot.start( async (ctx) => {
             return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
         }
         
-        
-        // console.log('Data test Array: ', newUserData.createdUsers[0].id)
-        // console.log('Data test Object: ', newUserData.data.createdUsers[0].id)
-        console.log('Data Test 01: ', newUserData.data.createUsers[0].id)
-     
+             
         ctx.userId = newUserData.data.createUsers[0].id
+        ctx.userName = newUserData.data.createUsers[0].profile.name
 
         console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
 
@@ -64,19 +62,51 @@ bot.start( async (ctx) => {
 
         return ctx.reply('Your account has been created! \n Type /help for a list of commands!')
     
-    // } catch (error) {
-    //     console.log('Error creating account: ', error)
-    //     return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
-    // }
+    } catch (error) {
+        console.log('Error creating account: ', error)
+        return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
+    }
 })
 
 bot.command('help', (ctx) => {
-    ctx.reply('Available commands: ')
+    return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
+        /gm - A web 3 neccessity for any bot. \n
+        /balance - Check your MetaCash balance. \n
+        /showpk - Show your private key. \n
+        /account - Check your account details. \n
+        /send - Send MetaCash to another user. \n
+        /version - Check the current version of the bot. \n
+    `)
 })
 
+bot.command('account', async (ctx) => {
+    return ctx.reply(`Your account details: \n
+        Username: ${ctx.userName} \n
+        UserId: ${ctx.userId} \n
+        Address: ${ctx.address} \n
+    `)
+})
 
 bot.command('gm', (ctx) => {
 
+})
+
+bot.command('balance', async (ctx) => {
+
+})
+
+bot.command('showpk', async (ctx) => {
+    ctx.reply('Do you really want me to show you your private key? (reply "yes" or "no")')
+    bot.on('text', async (ctx) => {
+        if (ctx.message.text === 'yes') {
+            ctx.reply('Do not share your private key with anyone!')
+            return ctx.reply(`Your private key is: ${ctx.privateKey}`)
+        } else if (ctx.message.text === 'no') {
+            return ctx.reply('Private key not shown.')
+        } else {
+            return ctx.reply('Invalid response. Private key not shown.')
+        }
+    })
 })
 
 
@@ -119,10 +149,6 @@ bot.command('send', async (ctx) => {
         }
 })
 
-bot.help((ctx) => {
-    console.dir(ctx, {depth: null})
-})
-
 //
 // Interaction Commands
 //
@@ -145,7 +171,7 @@ bot.on(message("video"), (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.09')
+    return ctx.reply('Version 0.14')
 })
 
 
