@@ -34,6 +34,7 @@ bot.start( async (ctx) => {
     
     try {
         const wallet = await createWallet()
+        console.log('Wallet: ', wallet)
         const walletData = await JSON.parse(wallet)
         
         console.log(`${user} Wallet data: `, walletData)
