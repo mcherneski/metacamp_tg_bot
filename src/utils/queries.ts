@@ -95,6 +95,7 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
 
 export const balanceCheck = async (username: string, amount: number) => {
     const userBalance = await getUserByUsername(username)
+    console.log('User Balance: ', userBalance)
     const data = await JSON.parse(userBalance)
     console.log('User Balance Data: ', data)
     const balance = data.users[0].give_token_remaining
@@ -102,6 +103,7 @@ export const balanceCheck = async (username: string, amount: number) => {
     console.log(`${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`)
 
     if (balance >= amount) {
+        console.log('User has enough tokens to send.')
         return true
     }
 
@@ -110,7 +112,7 @@ export const balanceCheck = async (username: string, amount: number) => {
 
 export const sendToken = async (sender: string, recipient: string, amount: number) => {
     // Send amounts already verified in the bot code. 
-
+    console.log(`Send Token Function: ${sender} is sending ${amount} to ${recipient}`)
     // Get sender information
     const senderData = await getUserByUsername(sender)
     console.log(`Sender Data: ${senderData}`)
