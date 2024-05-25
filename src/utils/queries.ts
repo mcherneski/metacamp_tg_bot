@@ -57,10 +57,12 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
           id
           UserResponse {
             id
-            give_token_remaining
             created_at
             circle_id
-            starting_tokens
+          }
+          profile {
+            id
+            name
           }
         }
       }
