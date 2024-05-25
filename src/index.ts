@@ -97,7 +97,8 @@ bot.command('showpk', async (ctx) => {
     bot.on('text', async (ctx) => {
         if (ctx.message.text === 'yes') {
             ctx.reply('Do not share your private key with anyone!')
-            return ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
+            ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
+            return ctx.reply('Please delete the message with the private key after you have copied it!')
         } else if (ctx.message.text === 'no') {
             return ctx.reply('Private key not shown.')
         } else {
