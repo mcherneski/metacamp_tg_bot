@@ -30,7 +30,7 @@ bot.start( async (ctx) => {
     await ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
     await ctx.reply('Hold tight while we create your account...')
     
-    console.log('New user workflow triggered: ', user)
+    console.log('\n New user workflow triggered: ', user)
     
     try {
         const wallet = await createWallet()
@@ -44,6 +44,8 @@ bot.start( async (ctx) => {
         
         const newUser = await createUser(user as string, ctx.address)
         const newUserData = await JSON.parse(newUser)
+
+        console.log('Coordinape New User Data: ', newUserData)
 
         ctx.userId = newUserData.createdUsers[0].id
 
