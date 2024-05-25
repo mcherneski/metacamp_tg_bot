@@ -7,18 +7,12 @@ import { createWallet } from './utils/createWallet'
 require('dotenv').config()
 global.fetch = require('node-fetch')
 
-interface AppSession extends Scenes.WizardSession {
-    address: string
-    privateKey: number
-}
-
 interface AppContext extends Context {
     address: string
     privateKey: string
     userId: number
     userName: string
     
-    session: AppSession
 }
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
 bot.use(session())
@@ -37,6 +31,7 @@ bot.start( async (ctx) => {
     try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
+        console.log('Wallet Data: ', walletData)
         // Store in session
         ctx.address = walletData.address
         ctx.privateKey = walletData.privateKey
@@ -51,16 +46,13 @@ bot.start( async (ctx) => {
             console.log('Error creating user: ', newUserData.errors)
             return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
         }
-        
+        console.log('New Coordinape user created! ', newUser)
              
         ctx.userId = newUserData.data.createUsers[0].UserResponse.profile.id
         ctx.userName = newUserData.data.createUsers[0].UserResponse.profile.name
 
-        console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId)
-
-        console.log('New Coordinape user created! ', newUser)
-
-        return ctx.reply('Your account has been created! \n Type /help for a list of commands!')
+        console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId, ctx.userName)
+        return ctx.reply(`Your account has been created! \n Type /help for a list of commands!`)
     
     } catch (error) {
         console.log('Error creating account: ', error)
