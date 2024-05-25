@@ -126,46 +126,44 @@ bot.command('send', async (ctx) => {
     console.log('Payload: ', payload)
 
     if (args[0] && typeof args[0] === 'string' &&
-        
+
         args[1] && !isNaN(Number(args[1]))
-        
-        ) {
-            const recipient = args[0]
-            const amount: number = Number(args[1])
-            const message = args[2]
-            console.log('Send command message: ', message)
 
-            if (message) {
-                await ctx.telegram.sendMessage(recipient, message)
-            }
-            // await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
-            // bot.on('text', async (ctx) => {
-            //     let message
-            //     if (ctx.message.text != 'No'){
-            //         message = ctx.message.text
-            //         await ctx.telegram.sendMessage(message, recipient)
-            //     }
-                const sender = ctx.session.userName
-                console.log('Sender: ', sender)
+    ) {
+        const recipient = args[0]
+        const amount: number = Number(args[1])
+        const message = args[2]
+        console.log('Send command message: ', message)
 
-                try {
-
-                    const canSendAmount : boolean = await balanceCheck(sender, amount)
-                    if (!canSendAmount){return ctx.reply('You do not have enough Vibes to send!')}
-
-                    await sendToken(sender, recipient, amount)
-                } catch {
-                    return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
-                }
-                
-
-                return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
-                // Figure out how to send the message to the recipient. 
-            })
-            
-        } else {
-            return ctx.reply('Invalid arguments. Please use /send @username amount')
+        if (message) {
+            await ctx.telegram.sendMessage(recipient, message)
         }
+        // await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
+        // bot.on('text', async (ctx) => {
+        //     let message
+        //     if (ctx.message.text != 'No'){
+        //         message = ctx.message.text
+        //         await ctx.telegram.sendMessage(message, recipient)
+        //     }
+        const sender = ctx.session.userName
+        console.log('Sender: ', sender)
+
+        try {
+
+            const canSendAmount: boolean = await balanceCheck(sender, amount)
+            if (!canSendAmount) { return ctx.reply('You do not have enough Vibes to send!') }
+
+            await sendToken(sender, recipient, amount)
+        } catch {
+            return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
+        }
+
+
+        return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
+        // Figure out how to send the message to the recipient. 
+    }
+
+
 })
 
 //
