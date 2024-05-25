@@ -149,14 +149,6 @@ bot.command('version', (ctx) => {
     return ctx.reply('Version 0.09')
 })
 
-bot.use(session())
-bot.use(stage.middleware())
-bot.use((ctx, next) => {
-    ctx.address ??= ''
-    ctx.private_key ??= ''
-    return next()
-})
-
 
 bot.launch()
 
