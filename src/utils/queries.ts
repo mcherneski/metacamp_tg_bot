@@ -46,6 +46,8 @@ export const getUserByUsername = async (username: string) => {
 }
 
 export const createUser = async (telegramName: string, walletAddress: string) => {
+    const date = new Date()
+    console.log('Create User Query: ', date.toLocaleDateString())
     const username = telegramName
     const mutation = `
     mutation CreateUser{
