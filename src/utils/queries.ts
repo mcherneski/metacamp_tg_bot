@@ -24,7 +24,7 @@ export const getAllUsers = async () => {
 export const getUserByUsername = async (username: string) => {
     const query = `
         query GetUserByUsername {
-            users(where: {profile: {name: {_eq: "_Mikey"}}}) {
+            users(where: {profile: {name: {_eq: "${username}"}}}) {
             id
             give_token_received
             give_token_remaining
@@ -38,9 +38,9 @@ export const getUserByUsername = async (username: string) => {
       return data
 }
 
-export const getUserById = async (username: string) => {
+export const getUserById = async (id: string) => {
     const query = `
-        query GetUserById($_eq: bigint = "296490") {
+        query GetUserById($_eq: bigint = "${id}") {
             users(where: {id: {_eq: $_eq}}) {
             profile {
                 address
