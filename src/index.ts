@@ -15,15 +15,10 @@ interface SessionData {
 }
 
 interface AppContext extends Context {
-    address: string
-    privateKey: string
-    userId: number
-    userName: string
-
     session: SessionData
 }
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session())
+bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, userName: '' }) }))
 
 //
 // Standard Commands
@@ -42,12 +37,12 @@ bot.start( async (ctx) => {
         const walletData = await JSON.parse(wallet)
         console.log('Wallet Data: ', walletData)
         // Store in session
-        ctx.address = walletData.address
-        ctx.privateKey = walletData.privateKey
-        console.log('Context Address Data: ', ctx.address)
-        console.log('Context Private Key Data: ', ctx.privateKey)
+        ctx.session.address = walletData.address
+        ctx.session.privateKey = walletData.privateKey
+        console.log('Context Address Data: ', ctx.session.address)
+        console.log('Context Private Key Data: ', ctx.session.privateKey)
         const testName = '@TestUser' + randomNumber
-        const newUser = await createUser(testName, ctx.address)
+        const newUser = await createUser(testName, ctx.session.address)
         const newUserData = await JSON.parse(newUser)
 
         console.log('Coordinape New User Data: ', newUserData)
@@ -57,10 +52,10 @@ bot.start( async (ctx) => {
         }
         console.log('New Coordinape user created! ', newUser)
              
-        ctx.userId = newUserData.data.createUsers[0].UserResponse.profile.id
-        ctx.userName = newUserData.data.createUsers[0].UserResponse.profile.name
+        ctx.session.userId = newUserData.data.createUsers[0].UserResponse.profile.id
+        ctx.session.userName = newUserData.data.createUsers[0].UserResponse.profile.name
 
-        console.log('All contexts: ', ctx.address, ctx.privateKey, ctx.userId, ctx.userName)
+        console.log('All contexts: ', ctx.session.address, ctx.session.privateKey, ctx.session.userId, ctx.session.userName)
         return ctx.reply(`Your account has been created! \n Type /help for a list of commands!`)
     
     } catch (error) {
@@ -82,9 +77,9 @@ bot.command('help', (ctx) => {
 
 bot.command('account', async (ctx) => {
     return ctx.reply(`Your account details: \n
-        Username: ${ctx.userName} \n
-        UserId: ${ctx.userId} \n
-        Address: ${ctx.address} \n
+        Username: ${ctx.session.userName} \n
+        UserId: ${ctx.session.userId} \n
+        Address: ${ctx.session.address} \n
     `)
 })
 
@@ -102,7 +97,7 @@ bot.command('showpk', async (ctx) => {
     bot.on('text', async (ctx) => {
         if (ctx.message.text === 'yes') {
             ctx.reply('Do not share your private key with anyone!')
-            return ctx.reply(`Your private key is: ${ctx.privateKey}`)
+            return ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
         } else if (ctx.message.text === 'no') {
             return ctx.reply('Private key not shown.')
         } else {
