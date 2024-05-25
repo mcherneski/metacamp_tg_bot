@@ -27,15 +27,17 @@ bot.use(session())
 //
 bot.start( async (ctx) => {
     const user = ctx.from?.username
-    ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
-    ctx.reply('Hold tight while we create your account...')
+    await ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
+    await ctx.reply('Hold tight while we create your account...')
     
-    console.log('New user joined: ', user)
+    console.log('New user workflow triggered: ', user)
     
     try {
         const wallet = await createWallet()
         const walletData = JSON.parse(wallet)
-    
+        
+        console.log(`${user} Wallet data: `, walletData)
+
         ctx.address = walletData.address
         ctx.privateKey = walletData.privateKey
         
@@ -53,8 +55,6 @@ bot.start( async (ctx) => {
     } catch {
         return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
     }
-    
-
 })
 
 bot.command('help', (ctx) => {
