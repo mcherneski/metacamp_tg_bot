@@ -115,10 +115,12 @@ export const sendToken = async (sender: string, recipient: string, amount: numbe
     console.log(`Send Token Function: ${sender} is sending ${amount} to ${recipient}`)
     // Get sender information
     const senderResponse = await getUserByUsername(sender)
+    console.log('Sender Response: ', senderResponse)
     const senderData = await JSON.parse(senderResponse)
     console.log(`Sender Data: ${senderData}`)
 
     const recipientResponse = await getUserByUsername(recipient)
+    console.log('Recipient response: ', recipientResponse)
     const recipientData = await JSON.parse(recipientResponse)
     console.log(`Recipient Data: ${recipientData}`)
 
