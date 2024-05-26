@@ -137,15 +137,15 @@ export const sendToken = async (
   console.log(`Recipient Data: ${recipientData}`);
 
   const senderId: number = senderData.data.users[0].id
-  let currentSenderBalance = senderData.data.users[0].give_token_remaining;
-  let newSenderBalance = currentSenderBalance -= amount;
+  let currentSenderBalance = Number(senderData.data.users[0].give_token_remaining)
+  let newSenderBalance = currentSenderBalance - amount;
   console.log(
     `Current sender balance is ${currentSenderBalance} new balance will be ${newSenderBalance}`
   );
 
   const recipientId: number = recipientData.data.users[0].id
-  let currentRecipientBalance = recipientData.data.users[0].give_token_received;
-  var newRecipientBalance = currentRecipientBalance += amount;
+  let currentRecipientBalance = Number(recipientData.data.users[0].give_token_received)
+  let newRecipientBalance: number = currentRecipientBalance + amount;
   console.log(
     `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
   );
