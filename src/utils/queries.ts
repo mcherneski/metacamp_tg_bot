@@ -157,7 +157,7 @@ export const sendToken = async (
         const sendTokens = `
         mutation SendTokens {
             updateAllocations(
-              payload: {circle_id: ${circleId}, user_id: ${senderId}, allocations: {recipient_id: ${recipientId}, note: "${message}", tokens: ${amount}}}
+              payload: {circle_id: ${circleId}, user_id: ${senderId}, allocations: {recipient_id: ${recipientId}, note: "${message}", tokens: ${newRecipientBalance}}}
             ) {
               user_id
               user {
