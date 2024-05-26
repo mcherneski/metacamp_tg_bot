@@ -150,16 +150,27 @@ export const sendToken = async (
 
   const senderId = Number(sender)
   const recipientId = Number(recipient)
-  
+  console.log(`Sender: ${senderId} recipient: ${recipientId} amount: ${amount} message: ${message}`)
     try {
         const sendTokens = `
-        mutation SendTokens($note: String = "${message}", $recipient_id: String = "${recipientId}", $user_id: String = "${senderId}", $circle_id: Int = ${circleId}, $tokens: Int = ${amount}) {
+            mutation SendTokens {
             updateAllocations(
-              payload: {circle_id: $circle_id, user_id: $user_id, allocations: {recipient_id: $recipient_id, tokens: $tokens, note: $note}}
-            )
-          }
-          
-        `;
+                payload: {
+                circle_id: ${circleId}, 
+                user_id: "${senderId}", 
+                allocations: [
+                    {
+                    note: "${message}", 
+                    recipient_id: "${recipientId}", 
+                    tokens: ${amount}
+                    }
+                ]
+                }
+            ) {
+                id
+            }
+            }
+        `
         const response = await fetchCoordinapeData(sendTokens);
         console.log('SendToken response: ', response)
         const data = await JSON.stringify(response);
