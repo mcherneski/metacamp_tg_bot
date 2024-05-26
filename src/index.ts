@@ -132,7 +132,7 @@ bot.command('send', async (ctx) => {
     ) {
         const recipient = args[0]
         const amount: number = Number(args[1])
-        // const message = args[2]
+        const message = args[2]
         // console.log('Send command message: ', message)
 
         // if (message) {
@@ -154,7 +154,7 @@ bot.command('send', async (ctx) => {
             console.log('Can the user send specified amount: ', canSendAmount)
             if (!canSendAmount) { return ctx.reply('You do not have enough Vibes to send!') }
 
-            const sendRequest = await sendToken(sender, recipient, amount)
+            const sendRequest = await sendToken(sender, recipient, amount, message)
             const sendData = await JSON.parse(sendRequest)
 
             console.log('Send data: ', sendData)

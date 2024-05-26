@@ -118,11 +118,12 @@ export const balanceCheck = async (username: string, amount: number) => {
 export const sendToken = async (
   sender: string,
   recipient: string,
-  amount: number
+  amount: number,
+  message?: string
 ) => {
   // Send amounts already verified in the bot code.
   console.log(
-    `Send Token Function: ${sender} is sending ${amount} to ${recipient}`
+    `Send Token Function: ${sender} is sending ${amount} to ${recipient} with message ${message}`
   );
   // Get sender information
   const senderResponse = await getUserByUsername(sender);
