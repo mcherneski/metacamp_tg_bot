@@ -118,8 +118,15 @@ bot.command('account', async (ctx) => {
 })
 
 bot.command('gm', (ctx) => {
-    // ctx.sendPhoto('')
-    return ctx.reply('gm!')
+    const currentHour = new Date().getHours()
+    let response 
+    ctx.react('🥰')
+    if (currentHour < 18) {
+        response = `gm ${ctx.session.telegramName}! 🌚`
+    } else {
+        response = `gm ${ctx.session.telegramName}! 😁`
+    }
+    return ctx.reply(response)
 })
 
 // bot.command('balance', async (ctx) => {
