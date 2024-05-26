@@ -1,41 +1,31 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
 // import { Postgres } from '@telegraf/session/pg'
-import { PrismaClient } from '@prisma/client'
-
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-// import { 
-//     getAllUsers,
-//     createUser,
-//     balanceCheck,
-//     sendReward,
-//     sendToken,
-//     getUserById 
-// } from './utils/co_queries'
+import { 
+    getAllUsers,
+    createUser,
+    balanceCheck,
+    sendReward,
+    sendToken,
+    getUserById 
+} from './utils/co_queries'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
-const prisma = new PrismaClient()
 
 interface SessionData {
     address: string
     privateKey: string
     userId: number
-    telegramName: string
+    userName: string
 }
 
 interface AppContext extends Context {
     session: SessionData
 }
-
-interface UserCreateInput {
-    telegram_id: string;
-    walletAddress: string;
-}
-
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, telegramName: '' }) }))
+bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, userName: '' }) }))
 
 //
 // Standard Commands
@@ -43,17 +33,17 @@ bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 
 
 bot.start( async (ctx) => {
 
-    if (ctx.session.address && ctx.session.privateKey) {
-        return ctx.reply('You are already registered! Type /help for a list of commands.')
-    }
+    // if (ctx.session.address && ctx.session.privateKey) {
+    //     return ctx.reply('You are already registered! Type /help for a list of commands.')
+    // }
 
     const user = ctx.from.username?.toString() || ''
-    ctx.session.telegramName = user
     // if (!ctx.from.username) return ctx.reply('Error getting username')
-    await ctx.reply(`🏝️ Welcome to MetaCamp, ${user}! 🌊`)
+    await ctx.reply(`Welcome to MetaCamp Coordinape Circle, ${user}!`)
     await ctx.reply('Hold tight while we create your account...')
     
     console.log('\n New user workflow triggered: ', user)
+    const randomNumber = Math.floor(Math.random() * 500)
     try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
@@ -62,25 +52,24 @@ bot.start( async (ctx) => {
         ctx.session.address = walletData.address
         ctx.session.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.session.address)
-        console.log('Context Private Key Data: ', ctx.session.privateKey);
+        console.log('Context Private Key Data: ', ctx.session.privateKey)
+        const testName = '@TestUser' + randomNumber
+        const newUser = await createUser(testName, ctx.session.address)
+        const newUserData = await JSON.parse(newUser)
 
-        try {
-            const newUser = await prisma.user.create({
-                data: {
-                    telegram_id: user,
-                    walletAddress: ctx.session.address,
-                },
-            })
-            console.log('New User Created: ', newUser)
-
-            ctx.session.userId = newUser.id
-
-            return ctx.reply(`Your account has been created! \n Type /help for a list of commands!`)
-
-        } catch (error) {
-            console.log('Error creating new user: ', error)
-            return ctx.reply(`Error creating new user. ${error}`)
+        console.log('Coordinape New User Data: ', newUserData)
+        if (newUserData.errors) {
+            console.log('Error creating user: ', newUserData.errors)
+            return ctx.reply('Error creating account. Please send Mike a message (@MikeCski).')
         }
+        console.log('New Coordinape user created! ', newUser)
+             
+        ctx.session.userId = newUserData.data.createUsers[0].UserResponse.profile.id
+        ctx.session.userName = newUserData.data.createUsers[0].UserResponse.profile.name
+
+        console.log('All contexts: ', ctx.session.address, ctx.session.privateKey, ctx.session.userId, ctx.session.userName)
+        return ctx.reply(`Your account has been created! \n Type /help for a list of commands!`)
+    
     } catch (error) {
         console.log('Error creating account: ', error)
         return ctx.reply(`Error creating account. ${error} Please send Mike a message (@MikeCski).`)
@@ -99,22 +88,11 @@ bot.command('help', (ctx) => {
 })
 
 bot.command('account', async (ctx) => {
-    const tgusername = ctx.from.username || ''
-    try {
-        const user = await  getUserByTGName(tgusername)
-        console.log('User ${ctx.from.username} called account: ', user)
-
-        return ctx.reply(`Your account details: \n
-            Username: ${user.telegram_id} \n
-            Wallet Address: ${user.walletAddress} \n
-            Received: ${user.received} \n
-            Sent: ${user.sent} \n
-        `)
-
-    } catch (error) {
-        console.log(`${ctx.session.telegramName} call to /account failed: ${error}`)
-        return ctx.reply('Error fetching account details. Please send Mike a message (@MikeCski).')
-    }
+    return ctx.reply(`Your account details: \n
+        Username: ${ctx.session.userName} \n
+        UserId: ${ctx.session.userId} \n
+        Address: ${ctx.session.address} \n
+    `)
 })
 
 bot.command('gm', (ctx) => {
@@ -122,14 +100,14 @@ bot.command('gm', (ctx) => {
     return ctx.reply('gm!')
 })
 
-// bot.command('balance', async (ctx) => {
-//     const response = await getUserById(ctx.session.userId.toString())
-//     const tokenData = await JSON.parse(response)
+bot.command('balance', async (ctx) => {
+    const response = await getUserById(ctx.session.userId.toString())
+    const tokenData = await JSON.parse(response)
 
-//     console.log('Balance Command token data: ', tokenData)
-//     const tokensRemaining = tokenData.give_token_remaining
-//     return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)
-// })
+    console.log('Balance Command token data: ', tokenData)
+    const tokensRemaining = tokenData.give_token_remaining
+    return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)
+})
 
 bot.command('showPrivateKey', async (ctx) => {
     ctx.reply('Do not share your private key with anyone!')
@@ -167,13 +145,24 @@ bot.command('send', async (ctx) => {
         //         message = ctx.message.text
         //         await ctx.telegram.sendMessage(message, recipient)
         //     }
-        const sender = ctx.session.telegramName
+        const sender = ctx.session.userName
         console.log('Sender: ', sender)
 
         try {
-            await sendTransaction(sender, recipient, amount, message)
-        } catch (error){
-            console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
+
+            const canSendAmount: boolean = await balanceCheck(sender, amount)
+            console.log('Can the user send specified amount: ', canSendAmount)
+            if (!canSendAmount) { return ctx.reply('You do not have enough Vibes to send!') }
+
+            const sendRequest = await sendToken(sender, recipient, amount, message)
+            const sendData = await JSON.parse(sendRequest)
+
+            console.log('Send data: ', sendData)
+            if (sendData.errors) {
+                return ctx.reply('Error sending Vibes. Please send Mike a message to troubleshoot. (@MikeCski)')
+            }
+            return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
+        } catch {
             return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
         }
     }
@@ -183,18 +172,16 @@ bot.command('send', async (ctx) => {
 // Interaction Commands
 //
 
-bot.on(message("photo", "media_group_id"), async (ctx) => {
-    ctx.message.photo.forEach(async (photo) => {
-        //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-        await awardToken(ctx.session.telegramName, 1)
+bot.on(message("photo", "media_group_id"), (ctx) => {
+    ctx.message.photo.forEach((photo) => {
+        //assign the poster +1 metacoin per photo posted
     })
 })
 
-bot.on(message("video"), async (ctx) => {
+bot.on(message("video"), (ctx) => {
     if (ctx.message.video.duration < 5)
         {
-            //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-            await awardToken(ctx.session.telegramName, 1)
+            //assign the poster +1 metacoin
         }
     console.log('Video posted')
 })
