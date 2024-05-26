@@ -132,7 +132,7 @@ bot.command('send', async (ctx) => {
     ) {
         const recipient = args[0]
         const amount: number = Number(args[1])
-        const message = args[2]
+        // const message = args[2]
         // console.log('Send command message: ', message)
 
         // if (message) {
@@ -158,7 +158,9 @@ bot.command('send', async (ctx) => {
             const sendData = await JSON.parse(sendRequest)
 
             console.log('Send data: ', sendData)
-
+            if (sendData.errors) {
+                return ctx.reply('Error sending Vibes. Please send Mike a message to troubleshoot. (@MikeCski)')
+            }
             return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
         } catch {
             return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
