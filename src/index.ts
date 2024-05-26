@@ -8,7 +8,7 @@ import {
     sendReward,
     sendToken,
     getUserById 
-} from './utils/queries'
+} from './utils/co_queries'
 import { createWallet } from './utils/createWallet'
 
 require('dotenv').config()
