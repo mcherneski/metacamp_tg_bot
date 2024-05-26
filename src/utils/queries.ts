@@ -135,33 +135,33 @@ export const sendToken = async (
   const recipientData = await JSON.parse(recipientResponse);
   console.log(`Recipient Data: ${recipientData}`);
 
+  const senderId: number = senderData.data.users[0].id
   const currentSenderBalance = senderData.data.users[0].give_token_remaining;
   const newSenderBalance = currentSenderBalance - amount;
   console.log(
     `Current sender balance is ${currentSenderBalance} new balance will be ${newSenderBalance}`
   );
 
-  const currentRecipientBalance =
-    recipientData.data.users[0].give_token_received;
+  const recipientId: number = recipientData.data.users[0].id
+  const currentRecipientBalance = recipientData.data.users[0].give_token_received;
   const newRecipientBalance = currentRecipientBalance + amount;
   console.log(
     `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
   );
 
-  const senderId = Number(sender)
-  const recipientId = Number(recipient)
   console.log(`Sender: ${senderId} recipient: ${recipientId} amount: ${amount} message: ${message}`)
+
     try {
         const sendTokens = `
             mutation SendTokens {
             updateAllocations(
                 payload: {
                 circle_id: ${circleId}, 
-                user_id: "${senderId}", 
+                user_id: ${senderId}, 
                 allocations: [
                     {
                     note: "${message}", 
-                    recipient_id: "${recipientId}", 
+                    recipient_id: ${recipientId}, 
                     tokens: ${amount}
                     }
                 ]
