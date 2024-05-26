@@ -148,8 +148,8 @@ export const sendToken = async (
     `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
   );
 
-  const senderId = Number(sender);
-  const recipientId = Number(recipient);
+  const senderId = Number(sender)
+  const recipientId = Number(recipient)
     try {
         const sendTokens = `
             mutation SendTokens {
