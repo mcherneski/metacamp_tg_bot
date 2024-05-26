@@ -123,13 +123,11 @@ export const sendToken = async (sender: string, recipient: string, amount: numbe
     console.log(`Recipient Data: ${recipientData}`)
 
     const currentSenderBalance = senderData.data.users[0].give_token_remaining
-
     console.log('Current sender balance is: ', currentSenderBalance)
 
-    // const recipientAPI = await getUserByUsername(recipient)
-    // const recipientData = await JSON.parse(recipientAPI)
-    // const recipientId = recipientData.id
-    // console.log('Recipient ID: ', recipientId)
+    const currentRecipientBalance = recipientData.data.users[0].give_token_received
+    console.log('Current Recipient Balance: ', currentRecipientBalance)
+
 
     // const sendTokens = `
     //     mutation SendTokens {
