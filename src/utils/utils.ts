@@ -24,8 +24,3 @@ export const fetchCoordinapeData = async (query: string) => {
         console.error('Error fetching Coordinape data: ', error)
     }
 }
-
-export const fetchNeonData = async (query: string) => {
-    require('dotenv').config()
-    
-}
