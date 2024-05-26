@@ -1,8 +1,9 @@
-import { fetchCoordinapeData } from "./utils"
-const circleId = 31099
+import { message } from "telegraf/filters";
+import { fetchCoordinapeData } from "./utils";
+const circleId = 31099;
 
 export const getAllUsers = async () => {
-    const query = `
+  const query = `
         query UsersQuery {
             users {
             give_token_received
@@ -15,14 +16,14 @@ export const getAllUsers = async () => {
             }
             }
         }      
-    `
-    const response = await fetchCoordinapeData(query)
-    const data = await JSON.stringify(response)
-    return data
-}
+    `;
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
+  return data;
+};
 
 export const getUserByUsername = async (username: string) => {
-    const query = `
+  const query = `
         query GetUserByUsername {
             users(where: {profile: {name: {_eq: "${username}"}}}) {
             id
@@ -30,16 +31,16 @@ export const getUserByUsername = async (username: string) => {
             give_token_remaining
             }
         }
-      `
+      `;
 
-      const response = await fetchCoordinapeData(query)
-      const data = await JSON.stringify(response)
-      
-      return data
-}
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
+
+  return data;
+};
 
 export const getUserById = async (id: string) => {
-    const query = `
+  const query = `
         query GetUserById($_eq: bigint = "${id}") {
             users(where: {id: {_eq: $_eq}}) {
             profile {
@@ -55,18 +56,21 @@ export const getUserById = async (id: string) => {
             id
             }
         }
-      `
-      const response = await fetchCoordinapeData(query)
-      const data = await JSON.stringify(response)
+      `;
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
 
-      return data
-}
+  return data;
+};
 
-export const createUser = async (telegramName: string, walletAddress: string) => {
-    const date = new Date()
-    console.log('Create User Query: ', date.toLocaleDateString())
-    
-    const mutation = `
+export const createUser = async (
+  telegramName: string,
+  walletAddress: string
+) => {
+  const date = new Date();
+  console.log("Create User Query: ", date.toLocaleDateString());
+
+  const mutation = `
     mutation CreateUser{
         createUsers(
           payload: {circle_id: ${circleId}, users: {name: "${telegramName}", entrance: "0", address: "${walletAddress}"}}
@@ -83,85 +87,107 @@ export const createUser = async (telegramName: string, walletAddress: string) =>
           }
         }
       }
-    `
-    console.log('Create User Mutation: ', mutation)
-    const response = await fetchCoordinapeData(mutation)
-    
+    `;
+  console.log("Create User Mutation: ", mutation);
+  const response = await fetchCoordinapeData(mutation);
 
-    const data = await JSON.stringify(response)
-    console.log('Create User Response: ', data)
-    return data
-}
+  const data = await JSON.stringify(response);
+  console.log("Create User Response: ", data);
+  return data;
+};
 
 export const balanceCheck = async (username: string, amount: number) => {
-    const userBalance = await getUserByUsername(username)
-    console.log('User Balance: ', userBalance)
-    const data = await JSON.parse(userBalance)
-    console.log('User Balance Data: ', data)
-    const balance = data.data.users[0].give_token_remaining
+  const userBalance = await getUserByUsername(username);
+  console.log("User Balance: ", userBalance);
+  const data = await JSON.parse(userBalance);
+  console.log("User Balance Data: ", data);
+  const balance = data.data.users[0].give_token_remaining;
 
-    console.log(`${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`)
+  console.log(
+    `${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`
+  );
 
-    if (balance >= amount) {
-        console.log('User has enough tokens to send.')
-        return true
-    }
+  if (balance >= amount) {
+    console.log("User has enough tokens to send.");
+    return true;
+  }
 
-    return false
-}
+  return false;
+};
 
-export const sendToken = async (sender: string, recipient: string, amount: number) => {
-    // Send amounts already verified in the bot code. 
-    console.log(`Send Token Function: ${sender} is sending ${amount} to ${recipient}`)
-    // Get sender information
-    const senderResponse = await getUserByUsername(sender)
-    console.log('Sender Response: ', senderResponse)
-    const senderData = await JSON.parse(senderResponse)
-    console.log(`Sender Data: ${senderData}`)
+export const sendToken = async (
+  sender: string,
+  recipient: string,
+  amount: number
+) => {
+  // Send amounts already verified in the bot code.
+  console.log(
+    `Send Token Function: ${sender} is sending ${amount} to ${recipient}`
+  );
+  // Get sender information
+  const senderResponse = await getUserByUsername(sender);
+  console.log("Sender Response: ", senderResponse);
+  const senderData = await JSON.parse(senderResponse);
+  console.log(`Sender Data: ${senderData}`);
 
-    const recipientResponse = await getUserByUsername(recipient)
-    console.log('Recipient response: ', recipientResponse)
-    const recipientData = await JSON.parse(recipientResponse)
-    console.log(`Recipient Data: ${recipientData}`)
+  const recipientResponse = await getUserByUsername(recipient);
+  console.log("Recipient response: ", recipientResponse);
+  const recipientData = await JSON.parse(recipientResponse);
+  console.log(`Recipient Data: ${recipientData}`);
 
-    const currentSenderBalance = senderData.data.users[0].give_token_remaining
-    console.log('Current sender balance is: ', currentSenderBalance)
+  const currentSenderBalance = senderData.data.users[0].give_token_remaining;
+  const newSenderBalance = currentSenderBalance - amount;
+  console.log(
+    `Current sender balance is ${currentSenderBalance} new balance will be ${newSenderBalance}`
+  );
 
-    const currentRecipientBalance = recipientData.data.users[0].give_token_received
-    console.log('Current Recipient Balance: ', currentRecipientBalance)
+  const currentRecipientBalance =
+    recipientData.data.users[0].give_token_received;
+  const newRecipientBalance = currentRecipientBalance + amount;
+  console.log(
+    `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
+  );
 
+  const senderId = Number(sender);
+  const recipientId = Number(recipient);
+    try {
+        const sendTokens = `
+            mutation SendTokens {
+                updateAllocations(
+                payload: {circle_id: ${circleId}, user_id: ${senderId} allocations: {note: "${message}", recipient_id:${recipientId} , tokens: ${amount}}}
+                )
+            }
+        `;
+        const response = await fetchCoordinapeData(sendTokens);
+        const data = await JSON.stringify(response);
+        return data
+  } catch (error) {
+    const errorString = JSON.stringify({
+        status: 'Update Allocation Failed',
+        error: error
+    })
+    return errorString
+  }
+};
 
-    // const sendTokens = `
-    //     mutation SendTokens {
-    //         updateAllocations(
-    //         payload: {circle_id: ${circleId}, allocations: {note: Sent ${recipient} ${amount}!, recipient_id:${senderId} , tokens: ${amount}}}
-    //         )
-    //     }
-    // `
-    // const response = await fetchCoordinapeData(sendTokens)
-    // const data = await JSON.stringify(response)
-    
-    // return data
-    return 'Send Tokens Function not working yet.'
-}
+export const sendReward = async (
+  recipient: string,
+  amount: number,
+  note: string
+) => {
+  // ADMIN FUNCTION FOR REWARDING USERS FOR ACTIONS
+  // Pending sendMetaCash function working.
 
-
-
-export const sendReward = async (recipient: string, amount: number, note: string) => {
-    // ADMIN FUNCTION FOR REWARDING USERS FOR ACTIONS
-    // Pending sendMetaCash function working. 
-
-    const mutation = `
+  const mutation = `
     mutation Reward {
         updateAllocations(
           payload: {circle_id: ${circleId}, allocations: {note: ${note}, recipient_id: ${recipient}, tokens: ${amount}}}
         )
       }
-    `
+    `;
 
-    const response = await fetchCoordinapeData(mutation)
-    const data = await JSON.stringify(response)
+  const response = await fetchCoordinapeData(mutation);
+  const data = await JSON.stringify(response);
 
-    return data
-}
-
+  return data;
+};
