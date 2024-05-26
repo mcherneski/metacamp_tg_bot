@@ -127,25 +127,25 @@ export const sendToken = async (
   );
   // Get sender information
   const senderResponse = await getUserByUsername(sender);
-  console.log("Sender Response: ", senderResponse);
-  const senderData = await JSON.parse(senderResponse);
-  console.log(`Sender Data: ${senderData}`);
-
-  const recipientResponse = await getUserByUsername(recipient);
-  console.log("Recipient response: ", recipientResponse);
-  const recipientData = await JSON.parse(recipientResponse);
-  console.log(`Recipient Data: ${recipientData}`);
+  console.log("Sender Response: ", senderResponse)
+  const senderData = await JSON.parse(senderResponse)
+  console.log(`Sender Data: ${senderData}`)
 
   const senderId: number = senderData.data.users[0].id
   let currentSenderBalance = Number(senderData.data.users[0].give_token_remaining)
-  let newSenderBalance = currentSenderBalance - amount;
+  let newSenderBalance = currentSenderBalance - amount
   console.log(
     `Current sender balance is ${currentSenderBalance} new balance will be ${newSenderBalance}`
-  );
+  )
+
+  const recipientResponse = await getUserByUsername(recipient)
+  console.log("Recipient response: ", recipientResponse)
+  const recipientData = await JSON.parse(recipientResponse)
+  console.log(`Recipient Data: ${recipientData}`)
 
   const recipientId: number = recipientData.data.users[0].id
   let currentRecipientBalance = Number(recipientData.data.users[0].give_token_received)
-  let newRecipientBalance: number = currentRecipientBalance + amount;
+  let newRecipientBalance: number = currentRecipientBalance + amount
   console.log(
     `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
   );
@@ -157,7 +157,7 @@ export const sendToken = async (
         const sendTokens = `
         mutation SendTokens {
             updateAllocations(
-              payload: {circle_id: ${circleId}, user_id: ${senderId}, allocations: {recipient_id: ${recipientId}, note: "${message}", tokens: ${newRecipientBalance}}}
+              payload: {circle_id: ${circleId}, user_id: ${senderId}, allocations: {recipient_id: ${recipientId}, note: "${message}", tokens: ${amount}}}
             ) {
               user_id
               user {
