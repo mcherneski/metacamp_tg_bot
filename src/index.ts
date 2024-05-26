@@ -80,7 +80,7 @@ bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /gm - A web 3 neccessity for any bot. \n
         /balance - Check your MetaCash balance. \n
-        /showpk - Show your private key. \n
+        /showPrivateKey - Show your private key. \n
         /account - Check your account details. \n
         /send - Send MetaCash to another user. \n
         /version - Check the current version of the bot. \n
@@ -109,7 +109,7 @@ bot.command('balance', async (ctx) => {
     return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)
 })
 
-bot.command('showpk', async (ctx) => {
+bot.command('showPrivateKey', async (ctx) => {
     ctx.reply('Do not share your private key with anyone!')
     ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
     return ctx.reply('Please delete the message with the private key after you have copied it!')
@@ -151,6 +151,7 @@ bot.command('send', async (ctx) => {
         try {
 
             const canSendAmount: boolean = await balanceCheck(sender, amount)
+            console.log('Can the user send specified amount: ', canSendAmount)
             if (!canSendAmount) { return ctx.reply('You do not have enough Vibes to send!') }
 
             await sendToken(sender, recipient, amount)
@@ -158,13 +159,7 @@ bot.command('send', async (ctx) => {
         } catch {
             return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
         }
-
-
-        return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
-        // Figure out how to send the message to the recipient. 
     }
-
-
 })
 
 //

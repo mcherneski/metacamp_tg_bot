@@ -114,13 +114,17 @@ export const sendToken = async (sender: string, recipient: string, amount: numbe
     // Send amounts already verified in the bot code. 
     console.log(`Send Token Function: ${sender} is sending ${amount} to ${recipient}`)
     // Get sender information
-    const senderData = await getUserByUsername(sender)
+    const senderResponse = await getUserByUsername(sender)
+    const senderData = await JSON.parse(senderResponse)
     console.log(`Sender Data: ${senderData}`)
 
-    const recipientData = await getUserByUsername(recipient)
+    const recipientResponse = await getUserByUsername(recipient)
+    const recipientData = await JSON.parse(recipientResponse)
     console.log(`Recipient Data: ${recipientData}`)
 
-    // const currentSenderBalance = senderData.give_token_remaining
+    const currentSenderBalance = senderData.data.users[0].give_token_remaining
+
+    console.log('Current sender balance is: ', currentSenderBalance)
 
     // const recipientAPI = await getUserByUsername(recipient)
     // const recipientData = await JSON.parse(recipientAPI)
