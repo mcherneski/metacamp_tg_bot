@@ -31,11 +31,11 @@ interface AppContext extends Context {
 
 interface UserCreateInput {
     telegram_id: string;
-    walletAddress: string;
+    // walletAddress: string;
 }
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, telegramName: '' }) }))
+bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', address: '', privateKey: '' }) }))
 
 //
 // Standard Commands
@@ -43,8 +43,17 @@ bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 
 
 bot.start( async (ctx) => {
 
-    if (ctx.session.address && ctx.session.privateKey) {
+    if (ctx.session.telegramName && ctx.session.userId) {
         return ctx.reply('You are already registered! Type /help for a list of commands.')
+    }
+
+    const checkExistingUser = await getUserByTGName(ctx.from.username || '')
+
+    if (checkExistingUser.telegram_id === ctx.from.username) {
+        ctx.session.telegramName === checkExistingUser.telegram_id
+        ctx.session.userId === checkExistingUser.id
+
+        return ctx.reply('You are already registered')
     }
 
     const user = ctx.from.username?.toString() || ''
@@ -72,11 +81,8 @@ bot.start( async (ctx) => {
                 },
             })
             console.log('New User Created: ', newUser)
-
             ctx.session.userId = newUser.id
-
             return ctx.reply(`Your account has been created! \n Type /help for a list of commands!`)
-
         } catch (error) {
             console.log('Error creating new user: ', error)
             return ctx.reply(`Error creating new user. ${error}`)
