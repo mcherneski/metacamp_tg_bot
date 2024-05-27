@@ -13,8 +13,12 @@ export const createUser = async (telegram_id: string, walletAddress: string) => 
 }
 
 export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
-   const sender = await prisma.user.findUnique({where: {telegram_id: senderTelegram}})
-   const recipient = await prisma.user.findUnique({where: {telegram_id: recipientTelegram}})
+   const sender = await prisma.user.findFirst({
+      where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
+   })
+   const recipient = await prisma.user.findFirst({
+      where: {telegram_id: {equals: recipientTelegram, mode: 'insensitive'}}
+   })
    
    if (!sender) {
       throw new Error('Sender not found')
@@ -59,7 +63,8 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
 
 export const getUserTransactions = async (telegram_id: string) => {
    // Fetch user by their telegram_id
-   const user = await prisma.user.findUnique({ where: { telegram_id } });
+   const user = await prisma.user.findFirst({ where: { telegram_id: { equals: telegram_id, mode: 'insensitive'}}
+})
  
    if (!user) {
      throw new Error('User not found');
@@ -76,7 +81,7 @@ export const getUserTransactions = async (telegram_id: string) => {
  }
 
  export const getUserByTGName = async (telegram_id: string) => {
-   const user = await prisma.user.findUnique({ where : {telegram_id}})
+   const user = await prisma.user.findFirst({ where : {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
 
    if (!user) {
       throw new Error('User not found')
@@ -86,7 +91,7 @@ export const getUserTransactions = async (telegram_id: string) => {
 
 
  export const awardToken = async (telegram_id: string, amount: number) => {
-   const user = await prisma.user.findUnique({where: {telegram_id}})
+   const user = await prisma.user.findFirst({where: {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
    if (!user) {
       throw new Error('User not found')
    }
