@@ -160,9 +160,9 @@ bot.command('send', async (ctx) => {
         sender = ctx.message.from.username || ''
         const newMessage = `${sender} sent you some tokens with a message! /n ${message}`
        
-        if (message !== '' || message !== undefined) {
-            await ctx.telegram.sendMessage(recipient, newMessage)
-        }
+        // if (message !== '' || message !== undefined) {
+        //     await ctx.telegram.sendMessage(recipient, newMessage)
+        // }
 
         try {
             if (sender !== ''){
