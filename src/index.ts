@@ -155,6 +155,7 @@ bot.command('send', async (ctx) => {
         args[1] && !isNaN(Number(args[1]))
     ) {
         recipient = args[0]
+        recipient = recipient.replace('@', '')
         const amount: number = Number(args[1])
         const message = args[2]
         sender = ctx.message.from.username || ''
