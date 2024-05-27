@@ -52,7 +52,10 @@ bot.start( async (ctx) => {
 
     const checkExistingUser = await getUserByTGName(ctx.from.username || '')
 
-    if (checkExistingUser.telegram_id === ctx.from.username) {
+
+    
+
+    if (checkExistingUser !== "User not found." && checkExistingUser.telegram_id === ctx.from.username) {
         ctx.session.telegramName === checkExistingUser.telegram_id
         ctx.session.userId === checkExistingUser.id
 
