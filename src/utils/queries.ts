@@ -58,7 +58,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       })
       
       console.log('Transaction successful')
-      
+
       const response = {
          sender: sender.telegram_id,
          recipient: recipient.telegram_id,
@@ -94,6 +94,7 @@ export const getUserTransactions = async (telegram_id: string) => {
  }
 
  export const getUserByTGName = async (telegram_id: string) => {
+   console.log('----------------- Starting new getUserByTGName command -----------------')
    const user = await prisma.user.findFirst({ where : {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
 
    if (!user) {
