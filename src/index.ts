@@ -167,8 +167,8 @@ bot.command('send', async (ctx) => {
 
         try {
             if (sender !== ''){
-                console.log(`Sender: ${sender}, Recipient: ${recipient}, Amount: ${amount}, Message: ${message}`)
-                await sendTransaction(sender, recipient, amount, message)
+                console.log('Sending transaction')
+                await sendTransaction(sender, recipient, amount, newMessage)
             }
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)

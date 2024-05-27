@@ -34,7 +34,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       throw new Error('Not enough tokens to send')
    }
    try {
-      const transaction = await prisma.transaction.create({
+      await prisma.transaction.create({
          data: {
             value: value,
             senderId: sender.id,
@@ -55,8 +55,15 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
          where: {telegram_id: recipient.telegram_id},
          data: {received: {increment: value}}
       })
-   
-      return transaction
+      
+      const response = {
+         sender: sender.telegram_id,
+         recipient: recipient.telegram_id,
+         value: value,
+         success: true
+      }
+      return JSON.stringify(response)
+      
    } catch (error) {
       console.log('Error sending transaction: ', error)
       return new Error('Error sending transaction')
