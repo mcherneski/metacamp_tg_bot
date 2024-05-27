@@ -53,7 +53,7 @@ bot.start( async (ctx) => {
         ctx.session.telegramName === checkExistingUser.telegram_id
         ctx.session.userId === checkExistingUser.id
 
-        return ctx.reply('You are already registered')
+        return ctx.reply('You are already registered! Try /help to see a list of commands.')
     }
 
     const user = ctx.from.username?.toString() || ''
@@ -148,21 +148,17 @@ bot.command('balance', async (ctx) => {
 bot.command('send', async (ctx) => {
     const args = ctx.args
     const payload = ctx.payload
+    let sender
     console.log('Send args: ', args)
-    console.log('Send payload: ', payload)
-
-    console.log('Payload: ', payload)
 
     if (args[0] && typeof args[0] === 'string' &&
-
         args[1] && !isNaN(Number(args[1]))
-
     ) {
         const recipient = args[0]
         const amount: number = Number(args[1])
         const message = args[2]
+        sender = ctx.message.from.username || ''
         // console.log('Send command message: ', message)
-
         // if (message) {
         //     await ctx.telegram.sendMessage(recipient, message)
         // }
@@ -173,11 +169,12 @@ bot.command('send', async (ctx) => {
         //         message = ctx.message.text
         //         await ctx.telegram.sendMessage(message, recipient)
         //     }
-        const sender = ctx.session.telegramName
-        console.log('Sender: ', sender)
-
+        // const sender = ctx.session.telegramName
+        // console.log('Sender: ', sender)
         try {
-            await sendTransaction(sender, recipient, amount, message)
+            if (sender !== ''){
+                await sendTransaction(sender, recipient, amount, message)
+            }
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
             return ctx.reply('Error. Please dm Mike. (@MikeCski)')
