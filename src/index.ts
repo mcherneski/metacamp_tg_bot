@@ -101,8 +101,9 @@ bot.command('help', (ctx) => {
         /balance - Check your MetaCash balance. \n
         /showPrivateKey - Show your private key. \n
         /account - Check your account details. \n
+
         /send - Send MetaCash to another user. \n
-        /version - Check the current version of the bot. \n
+        example: /send @username amount "Message"
     `)
 })
 
@@ -128,7 +129,7 @@ bot.command('account', async (ctx) => {
 bot.command('gm', (ctx) => {
     const currentHour = new Date().getHours()
     let response 
-    ctx.react('🥰')
+    ctx.react('❤')
     if (currentHour < 18) {
         response = `gm ${ctx.session.telegramName}! 🌚`
     } else {
@@ -137,20 +138,16 @@ bot.command('gm', (ctx) => {
     return ctx.reply(response)
 })
 
-// bot.command('balance', async (ctx) => {
-//     const response = await getUserById(ctx.session.userId.toString())
-//     const tokenData = await JSON.parse(response)
+bot.command('balance', async (ctx) => {
+    const user = await getUserByTGName(ctx.session.telegramName)
+    return ctx.reply(`Your balance is: ${user.balance}`)
 
-//     console.log('Balance Command token data: ', tokenData)
-//     const tokensRemaining = tokenData.give_token_remaining
-//     return ctx.reply(`You have ${tokensRemaining} Vibes remaining!`)
-// })
+})
 
 bot.command('showPrivateKey', async (ctx) => {
     ctx.reply('Do not share your private key with anyone!')
     ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
     return ctx.reply('Please delete the message with the private key after you have copied it!')
-
 })
 
 
@@ -218,7 +215,7 @@ bot.on(message("video"), async (ctx) => {
 // Admin Commands
 //
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.14')
+    return ctx.reply('Version 0.15')
 })
 
 
