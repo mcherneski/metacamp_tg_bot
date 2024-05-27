@@ -135,7 +135,6 @@ bot.command('gm', (ctx) => {
 bot.command('balance', async (ctx) => {
     const user = await getUserByTGName(ctx.session.telegramName)
     return ctx.reply(`Your balance is: ${user.balance}`)
-
 })
 
 // bot.command('showPrivateKey', async (ctx) => {
@@ -149,23 +148,25 @@ bot.command('send', async (ctx) => {
     const args = ctx.args
     const payload = ctx.payload
     let sender
+    let recipient
     console.log('Send args: ', args)
 
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
     ) {
-        const recipient = args[0]
+        recipient = args[0]
         const amount: number = Number(args[1])
         const message = args[2]
         sender = ctx.message.from.username || ''
         const newMessage = `${sender} sent you some tokens with a message! /n ${message}`
-       
+
         // if (message !== '' || message !== undefined) {
         //     await ctx.telegram.sendMessage(recipient, newMessage)
         // }
 
         try {
             if (sender !== ''){
+                console.log(`Sender: ${sender}, Recipient: ${recipient}, Amount: ${amount}, Message: ${message}`)
                 await sendTransaction(sender, recipient, amount, message)
             }
         } catch (error){
