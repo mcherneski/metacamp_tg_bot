@@ -32,3 +32,8 @@ model Transaction {
   message       String?
   sender        User?     @relation(fields: [senderId], references: [id])
 }
+
+model Session {
+  key     String @id
+  data    Json
+}

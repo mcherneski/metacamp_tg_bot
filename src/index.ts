@@ -1,5 +1,4 @@
 import { Telegraf, Markup, session, Context, Scenes, Composer } from 'telegraf'
-// import { Postgres } from '@telegraf/session/pg'
 import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
@@ -13,29 +12,40 @@ import { message, callbackQuery, channelPost } from 'telegraf/filters'
 // } from './utils/co_queries'
 import { createWallet } from './utils/createWallet'
 import { awardToken, getUserByTGName, sendTransaction } from './utils/queries';
+import { Postgres } from '@telegraf/session/pg';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
 const prisma = new PrismaClient()
 
-interface SessionData {
-    address: string
-    privateKey: string
-    userId: number
-    telegramName: string
-}
 
-interface AppContext extends Context {
-    session: SessionData
-}
+// interface SessionData {
+//     address: string
+//     privateKey: string
+//     userId: number
+//     telegramName: string
+// }
 
-interface UserCreateInput {
-    telegram_id: string;
-    walletAddress: string;
-}
+// interface AppContext extends Context {
+//     session: SessionData
+// }
+
+// interface UserCreateInput {
+//     telegram_id: string;
+//     walletAddress: string;
+// }
+
+const store = Postgres({
+    host: process.env.PGHOST,
+    database: process.env.PGDATABASE,
+    user: process.env.PGUSER,
+    password: process.env.PGPASSWORD,
+    
+})
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, telegramName: '' }) }))
+// bot.use(session({ defaultSession: () => ({ address: '', privateKey: '', userId: 0, telegramName: '' }) }))
+bot.use(session({ store }))
 
 //
 // Standard Commands
