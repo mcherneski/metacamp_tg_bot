@@ -13,6 +13,7 @@ export const createUser = async (telegram_id: string, walletAddress: string) => 
 }
 
 export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
+   console.log('----------------------- Running new sendTransaction query call -----------------------')
    const sender = await prisma.user.findFirst({
       where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
    })
@@ -56,6 +57,8 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
          data: {received: {increment: value}}
       })
       
+      console.log('Transaction successful')
+      
       const response = {
          sender: sender.telegram_id,
          recipient: recipient.telegram_id,
@@ -63,7 +66,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
          success: true
       }
       return JSON.stringify(response)
-      
+
    } catch (error) {
       console.log('Error sending transaction: ', error)
       return new Error('Error sending transaction')

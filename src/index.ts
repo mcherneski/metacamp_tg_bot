@@ -145,6 +145,7 @@ bot.command('balance', async (ctx) => {
 
 
 bot.command('send', async (ctx) => {
+    console.log('----------------- Starting new send command -----------------')
     const args = ctx.args
     const payload = ctx.payload
     let sender
