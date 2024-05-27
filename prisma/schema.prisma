@@ -21,6 +21,7 @@ model User {
   balance  Int       @default(100)
   sent   Int       @default(0)
   received Int     @default(0)
+  chatiD Int
   transactions  Transaction[]
 }
 

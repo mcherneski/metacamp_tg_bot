@@ -15,7 +15,6 @@ const store = Postgres({
     database: process.env.PGDATABASE,
     user: process.env.PGUSER,
     password: process.env.PGPASSWORD,
-    
 })
 
 interface SessionData {
@@ -23,6 +22,8 @@ interface SessionData {
     privateKey: string
     userId: number
     telegramName: string
+    photoCount: number
+    videoCount: number
 }
 
 interface AppContext extends Context {
@@ -35,7 +36,7 @@ interface UserCreateInput {
 }
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', address: '', privateKey: '' }) }))
+bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
 
 //
 // Standard Commands
@@ -72,12 +73,13 @@ bot.start( async (ctx) => {
         ctx.session.privateKey = walletData.privateKey
         console.log('Context Address Data: ', ctx.session.address)
         console.log('Context Private Key Data: ', ctx.session.privateKey);
-
+        console.log('Local chat id: ', ctx.chat.id)
         try {
             const newUser = await prisma.user.create({
                 data: {
                     telegram_id: user,
                     walletAddress: ctx.session.address,
+                    chatId: ctx.chat.id,
                 },
             })
             console.log('New User Created: ', newUser)
@@ -159,16 +161,21 @@ bot.command('send', async (ctx) => {
         const amount: number = Number(args[1])
         const message = args[2]
         sender = ctx.message.from.username || ''
-        const newMessage = `${sender} sent you some tokens with a message! /n ${message}`
-
-        // if (message !== '' || message !== undefined) {
-        //     await ctx.telegram.sendMessage(recipient, newMessage)
-        // }
+        
+        const recipientChatId = await getUserByTGName(recipient).chatId
+        console.log('Recipient Chat Id: ', recipientChatId)
+        
+        if (message !== '' || message !== undefined) {
+            const newMessage = `${sender} sent you some Vibes! /n ${message}`
+            
+            await ctx.telegram.sendMessage(recipientChatId, newMessage)
+        }
 
         try {
             if (sender !== ''){
                 console.log('Sending transaction')
-                await sendTransaction(sender, recipient, amount, newMessage)
+                await sendTransaction(sender, recipient, amount, message)
+                return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
             }
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
@@ -181,23 +188,23 @@ bot.command('send', async (ctx) => {
 // Interaction Commands
 //
 // Photo and video rewards. Need to upload from the bot to ipfs and then award token.
-// bot.on(message("photo", "media_group_id"), async (ctx) => {
-//     ctx.message.photo.forEach(async (photo) => {
-//         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
+bot.on(message("photo", "media_group_id"), async (ctx) => {
+    ctx.message.photo.forEach(async (photo) => {
+        //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
 
-//         await awardToken(ctx.session.telegramName, 1)
-//     })
-// })
+        await awardToken(ctx.session.telegramName, 1)
+    })
+})
 
-// bot.on(message("video"), async (ctx) => {
-//     if (ctx.message.video.duration < 5)
-//         {
-//             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
+bot.on(message("video"), async (ctx) => {
+    if (ctx.message.video.duration < 5)
+        {
+            //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
 
-//             await awardToken(ctx.session.telegramName, 1)
-//         }
-//     console.log('Video posted')
-// })
+            await awardToken(ctx.session.telegramName, 1)
+        }
+    console.log('Video posted')
+})
 
 // 
 // Admin Commands
