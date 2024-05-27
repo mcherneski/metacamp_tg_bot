@@ -158,19 +158,12 @@ bot.command('send', async (ctx) => {
         const amount: number = Number(args[1])
         const message = args[2]
         sender = ctx.message.from.username || ''
-        // console.log('Send command message: ', message)
-        // if (message) {
-        //     await ctx.telegram.sendMessage(recipient, message)
-        // }
-        // await ctx.reply(`Send a shoutout to recipient? (reply 'no' if not) `)
-        // bot.on('text', async (ctx) => {
-        //     let message
-        //     if (ctx.message.text != 'No'){
-        //         message = ctx.message.text
-        //         await ctx.telegram.sendMessage(message, recipient)
-        //     }
-        // const sender = ctx.session.telegramName
-        // console.log('Sender: ', sender)
+        const newMessage = `${sender} sent you some tokens with a message! /n ${message}`
+       
+        if (message !== '' || message !== undefined) {
+            await ctx.telegram.sendMessage(recipient, newMessage)
+        }
+
         try {
             if (sender !== ''){
                 await sendTransaction(sender, recipient, amount, message)
