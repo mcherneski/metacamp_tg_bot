@@ -105,7 +105,6 @@ bot.command('account', async (ctx) => {
     const tgusername = ctx.from.username || ''
     try {
         const user = await  getUserByTGName(tgusername)
-        console.log('User ${ctx.from.username} called account: ', user)
 
         return ctx.reply(`Your account details: \n
             Username: ${user.telegram_id} \n
