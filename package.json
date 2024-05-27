@@ -20,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^5.14.0",
     "@telegraf/session": "^2.0.0-beta.7",
+    "@web3-storage/w3up-client": "^13.1.1",
     "dotenv": "^16.4.5",
     "eslint": "^9.2.0",
     "ethers": "^6.12.1",

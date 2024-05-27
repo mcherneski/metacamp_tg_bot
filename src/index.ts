@@ -3,14 +3,6 @@ import { Postgres } from '@telegraf/session/pg'
 import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
-// import { 
-//     getAllUsers,
-//     createUser,
-//     balanceCheck,
-//     sendReward,
-//     sendToken,
-//     getUserById 
-// } from './utils/co_queries'
 import { createWallet } from './utils/createWallet'
 import { awardToken, getUserByTGName, sendTransaction } from './utils/queries';
 
@@ -98,12 +90,8 @@ bot.start( async (ctx) => {
 bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /gm - A web 3 neccessity for any bot. \n
-        /balance - Check your MetaCash balance. \n
-        /showPrivateKey - Show your private key. \n
         /account - Check your account details. \n
-
-        /send - Send MetaCash to another user. \n
-        example: /send @username amount "Message"
+        /send - ( /send @username amount "Message" ) \n
     `)
 })
 
@@ -115,7 +103,7 @@ bot.command('account', async (ctx) => {
 
         return ctx.reply(`Your account details: \n
             Username: ${user.telegram_id} \n
-            Wallet Address: ${user.walletAddress} \n
+            Balance: ${user.balance} \n
             Received: ${user.received} \n
             Sent: ${user.sent} \n
         `)
@@ -131,9 +119,9 @@ bot.command('gm', (ctx) => {
     let response 
     ctx.react('❤')
     if (currentHour < 18) {
-        response = `gm ${ctx.session.telegramName}! 🌚`
+        response = `gm 🌚`
     } else {
-        response = `gm ${ctx.session.telegramName}! 😁`
+        response = `gm 😁`
     }
     return ctx.reply(response)
 })
@@ -144,11 +132,11 @@ bot.command('balance', async (ctx) => {
 
 })
 
-bot.command('showPrivateKey', async (ctx) => {
-    ctx.reply('Do not share your private key with anyone!')
-    ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
-    return ctx.reply('Please delete the message with the private key after you have copied it!')
-})
+// bot.command('showPrivateKey', async (ctx) => {
+//     ctx.reply('Do not share your private key with anyone!')
+//     ctx.reply(`Your private key is: ${ctx.session.privateKey}`)
+//     return ctx.reply('Please delete the message with the private key after you have copied it!')
+// })
 
 
 bot.command('send', async (ctx) => {
@@ -186,7 +174,7 @@ bot.command('send', async (ctx) => {
             await sendTransaction(sender, recipient, amount, message)
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
-            return ctx.reply('Error sending Vibes. Please talk to Mike. (@MikeCski)')
+            return ctx.reply('Error. Please dm Mike. (@MikeCski)')
         }
     }
 })
@@ -194,28 +182,37 @@ bot.command('send', async (ctx) => {
 //
 // Interaction Commands
 //
+// Photo and video rewards. Need to upload from the bot to ipfs and then award token.
+// bot.on(message("photo", "media_group_id"), async (ctx) => {
+//     ctx.message.photo.forEach(async (photo) => {
+//         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
 
-bot.on(message("photo", "media_group_id"), async (ctx) => {
-    ctx.message.photo.forEach(async (photo) => {
-        //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-        await awardToken(ctx.session.telegramName, 1)
-    })
-})
+//         await awardToken(ctx.session.telegramName, 1)
+//     })
+// })
 
-bot.on(message("video"), async (ctx) => {
-    if (ctx.message.video.duration < 5)
-        {
-            //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-            await awardToken(ctx.session.telegramName, 1)
-        }
-    console.log('Video posted')
-})
+// bot.on(message("video"), async (ctx) => {
+//     if (ctx.message.video.duration < 5)
+//         {
+//             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
+
+//             await awardToken(ctx.session.telegramName, 1)
+//         }
+//     console.log('Video posted')
+// })
 
 // 
 // Admin Commands
 //
+// bot.command('adminAward', async (ctx) => {
+//     if (ctx.from.username !== "MikeCski" || ctx.from.username !== "Yaylormewn" || ctx.from.username !== "Zakku99"){
+//         return ctx.reply('You are not authorized to use this command.')
+//     }
+// )
+// })
+
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.15')
+    return ctx.reply('Version 0.16')
 })
 
 
