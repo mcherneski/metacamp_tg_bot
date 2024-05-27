@@ -113,12 +113,14 @@ bot.command('account', async (ctx) => {
     try {
         const user = await getUserByTGName(tgusername)
 
+        if (user !== "User not found.") {
         return ctx.reply(`Your account details: \n
             Username: ${user.telegram_id} \n
             Balance: ${user.balance} \n
             Received: ${user.received} \n
             Sent: ${user.sent} \n
         `)
+        }
 
     } catch (error) {
         console.log(`${ctx.session.telegramName} call to /account failed: ${error}`)
@@ -140,7 +142,10 @@ bot.command('gm', (ctx) => {
 
 bot.command('balance', async (ctx) => {
     const user = await getUserByTGName(ctx.session.telegramName)
-    return ctx.reply(`Your balance is: ${user.balance}`)
+    if (user !== "User not found.") {
+        return ctx.reply(`Your balance is: ${user.balance}`)
+    }
+    
 })
 
 // bot.command('showPrivateKey', async (ctx) => {
@@ -156,6 +161,7 @@ bot.command('send', async (ctx) => {
     const payload = ctx.payload
     let sender
     let recipient
+    let recipientChatId
     console.log('Send args: ', args)
 
     if (args[0] && typeof args[0] === 'string' &&
@@ -168,13 +174,16 @@ bot.command('send', async (ctx) => {
         sender = ctx.message.from.username || ''
         
         const recipientQuery = await getUserByTGName(recipient)
-        const recipientChatId = recipientQuery.chatId
+        if (recipientQuery !== 'User not found.') {
+            recipientChatId = recipientQuery.chatId
+        }
+        
         console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== '' || message !== undefined) {
             const newMessage = `${sender} sent you some Vibes! /n ${message}`
             
-            await ctx.telegram.sendMessage(recipientChatId, newMessage)
+            await ctx.telegram.sendMessage(recipientChatId as number, newMessage)
         }
 
         try {
