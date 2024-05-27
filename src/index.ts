@@ -24,6 +24,7 @@ interface SessionData {
     telegramName: string
     photoCount: number
     videoCount: number
+    chatId: number
 }
 
 interface AppContext extends Context {
@@ -32,11 +33,12 @@ interface AppContext extends Context {
 
 interface UserCreateInput {
     telegram_id: string;
+
     // walletAddress: string;
 }
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
+bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', chatId: 0, address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
 
 //
 // Standard Commands
@@ -162,9 +164,10 @@ bot.command('send', async (ctx) => {
         const message = args[2]
         sender = ctx.message.from.username || ''
         
-        const recipientChatId = await getUserByTGName(recipient).chatId
+        const recipientQuery = await getUserByTGName(recipient)
+        const recipientChatId = recipientQuery.chatId
         console.log('Recipient Chat Id: ', recipientChatId)
-        
+
         if (message !== '' || message !== undefined) {
             const newMessage = `${sender} sent you some Vibes! /n ${message}`
             
