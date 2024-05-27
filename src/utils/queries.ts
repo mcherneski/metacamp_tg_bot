@@ -28,6 +28,8 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       throw new Error('Recipient not found')
    }
 
+   console.log(`Sender: ${sender.telegram_id}, Recipient: ${recipient.telegram_id}, Value: ${value}, Message: ${message}`)
+
    if (sender.balance < value) {
       throw new Error('Not enough tokens to send')
    }
@@ -45,17 +47,18 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       })
    
       await prisma.user.update({
-         where: {telegram_id: senderTelegram},
+         where: {telegram_id: sender.telegram_id},
          data: {balance: {decrement: value}}
       })
    
       await prisma.user.update({
-         where: {telegram_id: recipientTelegram},
-         data: { received: {increment: value}}
+         where: {telegram_id: recipient.telegram_id},
+         data: {received: {increment: value}}
       })
    
       return transaction
    } catch (error) {
+      console.log('Error sending transaction: ', error)
       return new Error('Error sending transaction')
    }
    

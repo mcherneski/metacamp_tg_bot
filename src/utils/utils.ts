@@ -10,7 +10,6 @@ export const fetchCoordinapeData = async (query: string) => {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `${apiKey}`
-
         },
         body: JSON.stringify({query: Query})
     }
