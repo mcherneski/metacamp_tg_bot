@@ -127,7 +127,6 @@ bot.command('account', async (ctx) => {
             Username: ${user.telegram_id} \n
             Balance: ${user.balance} \n
             Received: ${user.received} \n
-            Sent: ${user.sent} \n
         `)
         }
 
