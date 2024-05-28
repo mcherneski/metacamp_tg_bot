@@ -10,13 +10,6 @@ require('dotenv').config()
 global.fetch = require('node-fetch')
 const prisma = new PrismaClient()
 
-// const store = Postgres({
-//     host: process.env.PGHOST,
-//     database: process.env.PGDATABASE,
-//     user: process.env.PGUSER,
-//     password: process.env.PGPASSWORD,
-// })
-
 interface SessionData {
     address: string
     privateKey: string
@@ -46,8 +39,6 @@ bot.use(session({ defaultSession: () => ({
     lastName: '' 
     })
 }))
-
-
 
 //
 // Standard Commands
@@ -230,18 +221,30 @@ bot.command('send', async (ctx) => {
 //
 // Photo and video rewards. Need to upload from the bot to ipfs and then award token.
 bot.on(message("photo", "media_group_id"), async (ctx) => {
+    let user = ctx.session.telegramName
+    if (user.startsWith('@')){
+        user = user.toString().replace('@', '')
+    }
+
     ctx.message.photo.forEach(async (photo) => {
         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-        await awardToken(ctx.session.telegramName, 1)
+        await awardToken(user, 1)
+        return ctx.reply('Thanks for the photo! 📸 \n I just sent you one Vibe.')
 
     })
 })
 
 bot.on(message("video"), async (ctx) => {
+    let user = ctx.session.telegramName
+    if (user.startsWith('@')){
+        user = user.toString().replace('@', '')
+    }
+    
     if (ctx.message.video.duration < 5)
         {
             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-            await awardToken(ctx.session.telegramName, 1)
+            await awardToken(user, 1)
+            await ctx.reply('Thanks for the video! 🤩 \n I just sent you one Vibe.')
         }
     console.log('Video posted')
 })
