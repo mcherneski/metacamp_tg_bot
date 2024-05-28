@@ -184,7 +184,7 @@ bot.command('send', async (ctx) => {
     //     }
     // }
 // Handle Telegram Handle
-    if (!(args)){
+    if ((args.length === 0 )){
         return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle Amount(1-100) "Message"')
     }
     if (args[0] && typeof args[0] === 'string' &&
