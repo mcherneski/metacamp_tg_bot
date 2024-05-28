@@ -190,7 +190,7 @@ bot.command('send', async (ctx) => {
         console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== '' || message !== undefined) {
-            const newMessage = `${sender} sent you some Vibes! /n ${message}`
+            const newMessage = `\${sender} sent you some Vibes! \n ${message}`
             
             await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
         }
@@ -215,7 +215,7 @@ bot.command('send', async (ctx) => {
 bot.on(message("photo", "media_group_id"), async (ctx) => {
     ctx.message.photo.forEach(async (photo) => {
         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-
+        
         await awardToken(ctx.session.telegramName, 1)
     })
 })
