@@ -200,7 +200,7 @@ bot.command('send', async (ctx) => {
         console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== '' || message !== undefined) {
-            const newMessage = `\${sender} sent you some Vibes! \n ${message}`
+            const newMessage = `${sender} sent you some Vibes! \n ${message}`
             
             await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
         }
