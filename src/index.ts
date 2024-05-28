@@ -47,6 +47,8 @@ bot.use(session({ defaultSession: () => ({
     })
 }))
 
+
+
 //
 // Standard Commands
 //
@@ -71,6 +73,8 @@ bot.start( async (ctx) => {
     await ctx.reply('Hold tight while we create your account...')
     
     console.log('\n New user workflow triggered: ', user)
+
+    await ctx.getChatMenuButton()
     try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
