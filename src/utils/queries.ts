@@ -2,12 +2,14 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const createUser = async (telegram_id: string, walletAddress: string, chatId: string) => {
+export const createUser = async (telegram_id: string, walletAddress: string, chatId: string, firstName?: string, lastName?: string) => {
    const newUser = await prisma.user.create({
       data: {
          telegram_id: telegram_id,
          walletAddress: walletAddress,
-         chatId: chatId
+         chatId: chatId, 
+         firstName: firstName || '',
+         lastName: lastName || ''
       }
    })
    return newUser

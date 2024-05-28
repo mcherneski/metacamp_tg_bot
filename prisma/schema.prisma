@@ -17,6 +17,8 @@ datasource db {
 model User {
   id            Int       @id @default(autoincrement())
   telegram_id   String    @unique
+  firstName          String
+  lastName      String
   walletAddress String @unique
   balance  Int       @default(100)
   sent   Int       @default(0)

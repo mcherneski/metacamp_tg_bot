@@ -10,12 +10,12 @@ require('dotenv').config()
 global.fetch = require('node-fetch')
 const prisma = new PrismaClient()
 
-const store = Postgres({
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    user: process.env.PGUSER,
-    password: process.env.PGPASSWORD,
-})
+// const store = Postgres({
+//     host: process.env.PGHOST,
+//     database: process.env.PGDATABASE,
+//     user: process.env.PGUSER,
+//     password: process.env.PGPASSWORD,
+// })
 
 interface SessionData {
     address: string
@@ -25,43 +25,48 @@ interface SessionData {
     photoCount: number
     videoCount: number
     chatId: string
+    firstName: string
+    lastName: string
 }
 
 interface AppContext extends Context {
     session: SessionData
 }
 
-interface UserCreateInput {
-    telegram_id: string;
-
-    // walletAddress: string;
-}
-
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', chatId: '', address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
+bot.use(session({ defaultSession: () => ({ 
+    userId: 0,
+    telegramName: '',
+    chatId: '', 
+    address: '', 
+    privateKey: '', 
+    photoCount: 0, 
+    videoCount: 0, 
+    firstName: '', 
+    lastName: '' 
+    })
+}))
 
 //
 // Standard Commands
 //
 
 bot.start( async (ctx) => {
-
+    
+    // Check for existing users
     if (ctx.session.telegramName && ctx.session.userId) {
         return ctx.reply('You are already registered! Type /help for a list of commands.')
     }
-
     const checkExistingUser = await getUserByTGName(ctx.from.username || '')
-
     if (checkExistingUser !== "User not found." && checkExistingUser.telegram_id === ctx.from.username) {
         ctx.session.telegramName === checkExistingUser.telegram_id
         ctx.session.userId === checkExistingUser.id
-
-        return ctx.reply('You are already registered! Try /help to see a list of commands.')
+        return ctx.reply('This Telegram handle is already registered! \n Try /help to see a list of commands.')
     }
+
 
     const user = ctx.from.username?.toString() || ''
     ctx.session.telegramName = user
-    // if (!ctx.from.username) return ctx.reply('Error getting username')
     await ctx.reply(`🏝️ Welcome to MetaCamp, ${user}! 🌊`)
     await ctx.reply('Hold tight while we create your account...')
     
@@ -70,19 +75,25 @@ bot.start( async (ctx) => {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
         console.log('Wallet Data: ', walletData)
-        // Store in session
+        // Store Wallet data in session
         ctx.session.address = walletData.address
         ctx.session.privateKey = walletData.privateKey
-        console.log('Context Address Data: ', ctx.session.address)
-        console.log('Context Private Key Data: ', ctx.session.privateKey);
+
+        // Store local chat ID in dabatabse for future use.
         console.log('Local chat id: ', ctx.chat.id)
         const chatIdStr = (ctx.chat.id).toString()
+
+        // Get user's screen name
+        const tgFirstName = ctx.from.first_name || ''
+        const tgLastName = ctx.from.last_name || ''
         try {
             const newUser = await prisma.user.create({
                 data: {
                     telegram_id: user,
                     walletAddress: ctx.session.address,
                     chatId: chatIdStr,
+                    firstName: tgFirstName,
+                    lastName: tgLastName,
                 },
             })
             console.log('New User Created: ', newUser)
