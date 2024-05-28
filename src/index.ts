@@ -54,7 +54,7 @@ bot.use(session({ defaultSession: () => ({
 //
 
 bot.start( async (ctx) => {
-    
+    console.log('ChatId: ', ctx.chat.id)
     // Check for existing users
     if (ctx.session.telegramName && ctx.session.userId) {
         return ctx.reply('You are already registered! Type /help for a list of commands.')
@@ -232,8 +232,8 @@ bot.command('send', async (ctx) => {
 bot.on(message("photo", "media_group_id"), async (ctx) => {
     ctx.message.photo.forEach(async (photo) => {
         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-        
         await awardToken(ctx.session.telegramName, 1)
+
     })
 })
 
@@ -241,7 +241,6 @@ bot.on(message("video"), async (ctx) => {
     if (ctx.message.video.duration < 5)
         {
             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-
             await awardToken(ctx.session.telegramName, 1)
         }
     console.log('Video posted')
