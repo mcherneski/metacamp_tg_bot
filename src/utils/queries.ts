@@ -99,11 +99,15 @@ export const getUserTransactions = async (telegram_id: string) => {
    }
    return user
  }
+ 
 export const getUserByName = async (firstName: string) => {
    console.log('Looking for the user by their name values')
 
    const user = await prisma.user.findMany({ where: { firstName: { equals: firstName, mode: 'insensitive'}}})
 
+   if (Array.isArray(user) && user.length > 1){
+      console.log('User array: ', user)
+   }
    if (!user) {
       return "User not found"
    }

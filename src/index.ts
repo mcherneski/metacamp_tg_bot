@@ -167,35 +167,27 @@ bot.command('send', async (ctx) => {
     let recipient
     let recipientChatId
     console.log('Send args: ', args)
-// Handle Named User
-    if (args[0].startsWith('@')) {
-        console.log('Checking with TG username')
-        recipient = args[0].replace('@', '')
-    } else {
-        let namedUser: any
-        console.log('Checking with TG FirstName and LastName')
-        console.log('User first name: ', args[1])
-        namedUser = await getUserByName(args[1])
-
-        if (namedUser === 'User not found') {
-            return ctx.reply('User not found.')
-        }
-
-        if (Array.isArray(namedUser)) {
-            console.log('More than one named user')
-            return ctx.reply('More than one user found. Please use the TG username. \n (Feature in progress)')
-        }
-
-        recipient = namedUser.telegram_id
-        console.log('Named user', namedUser)
+    // if (!(args[0].startsWith('@'))){
+    //     console.log('Assessing as first name lookup')
+    //     let namedUser: any
+    //     namedUser = await getUserByName(args[0])
         
-    }
+    //     if (Array.isArray(namedUser)) {
+    //        const MarkupButtons = namedUser.map( user => Markup.button.callback(user.telegram_id, `select${user.id}`))
+    //        const keyboard = Markup.inlineKeyboard(MarkupButtons)
+
+    //        ctx.reply
+    //     }
+    // }
 // Handle Telegram Handle
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
     ) {
         recipient = args[0]
-        recipient = recipient.replace('@', '')
+        if (recipient.startsWith('@')) {
+            recipient = recipient.replace('@', '')
+        }
+        
         const amount: number = Number(args[1])
         const message = args[2]
         sender = ctx.message.from.username || ''
