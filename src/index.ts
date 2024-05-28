@@ -74,7 +74,9 @@ bot.start( async (ctx) => {
     
     console.log('\n New user workflow triggered: ', user)
 
-    await ctx.getChatMenuButton()
+    await ctx.setChatMenuButton({
+        type: 'commands'
+    })
     try {
         const wallet = await createWallet()
         const walletData = await JSON.parse(wallet)
