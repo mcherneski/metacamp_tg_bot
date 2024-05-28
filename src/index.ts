@@ -229,6 +229,7 @@ bot.on(message("photo", "media_group_id"), async (ctx) => {
     ctx.message.photo.forEach(async (photo) => {
         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
         await awardToken(user, 1)
+        console.log(`${user} has been awarded 1 Vibe for a video.`)
         return ctx.reply('Thanks for the photo! 📸 \n I just sent you one Vibe.')
 
     })
@@ -244,7 +245,8 @@ bot.on(message("video"), async (ctx) => {
         {
             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
             await awardToken(user, 1)
-            await ctx.reply('Thanks for the video! 🤩 \n I just sent you one Vibe.')
+            console.log(`${user} has been awarded 1 Vibe for a video.`)
+            return ctx.reply('Thanks for the video! 🤩 \n I just sent you one Vibe.')
         }
     console.log('Video posted')
 })
