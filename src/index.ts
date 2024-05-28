@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getUserByTGName, sendTransaction } from './utils/queries';
+import { awardToken, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
@@ -138,14 +138,9 @@ bot.command('account', async (ctx) => {
 })
 
 bot.command('gm', (ctx) => {
-    const currentHour = new Date().getHours()
     let response 
     ctx.react('❤')
-    if (currentHour < 18) {
-        response = `gm 🌚`
-    } else {
-        response = `gm 😁`
-    }
+    response = `gm`
     return ctx.reply(response)
 })
 
@@ -172,7 +167,30 @@ bot.command('send', async (ctx) => {
     let recipient
     let recipientChatId
     console.log('Send args: ', args)
+// Handle Named User
+    if (args[0].startsWith('@')) {
+        console.log('Checking with TG username')
+        recipient = args[0].replace('@', '')
+    } else {
+        let namedUser: any
+        console.log('Checking with TG FirstName and LastName')
+        console.log('User first name: ', args[1])
+        namedUser = await getUserByName(args[1])
 
+        if (namedUser === 'User not found') {
+            return ctx.reply('User not found.')
+        }
+
+        if (Array.isArray(namedUser)) {
+            console.log('More than one named user')
+            return ctx.reply('More than one user found. Please use the TG username. \n (Feature in progress)')
+        }
+
+        recipient = namedUser.telegram_id
+        console.log('Named user', namedUser)
+        
+    }
+// Handle Telegram Handle
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
     ) {

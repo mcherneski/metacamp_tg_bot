@@ -38,7 +38,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       throw new Error('Not enough tokens to send')
    }
    try {
-      await prisma.transaction.create({
+      const txn = await prisma.transaction.create({
          data: {
             value: value,
             senderId: sender.id,
@@ -62,13 +62,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
       
       console.log('Transaction successful')
 
-      const response = {
-         sender: sender.telegram_id,
-         recipient: recipient.telegram_id,
-         value: value,
-         success: true
-      }
-      return JSON.stringify(response)
+      return txn
 
    } catch (error) {
       console.log('Error sending transaction: ', error)
@@ -105,7 +99,17 @@ export const getUserTransactions = async (telegram_id: string) => {
    }
    return user
  }
+export const getUserByName = async (firstName: string) => {
+   console.log('Looking for the user by their name values')
 
+   const user = await prisma.user.findMany({ where: { firstName: { equals: firstName, mode: 'insensitive'}}})
+
+   if (!user) {
+      return "User not found"
+   }
+
+   return user
+}
 
  export const awardToken = async (telegram_id: string, amount: number) => {
    const user = await prisma.user.findFirst({where: {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
