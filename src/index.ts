@@ -24,7 +24,7 @@ interface SessionData {
     telegramName: string
     photoCount: number
     videoCount: number
-    chatId: number
+    chatId: string
 }
 
 interface AppContext extends Context {
@@ -38,7 +38,7 @@ interface UserCreateInput {
 }
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
-bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', chatId: 0, address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
+bot.use(session({ defaultSession: () => ({ userId: 0, telegramName: '', chatId: '', address: '', privateKey: '', photoCount: 0, videoCount: 0 }) }))
 
 //
 // Standard Commands
@@ -51,9 +51,6 @@ bot.start( async (ctx) => {
     }
 
     const checkExistingUser = await getUserByTGName(ctx.from.username || '')
-
-
-    
 
     if (checkExistingUser !== "User not found." && checkExistingUser.telegram_id === ctx.from.username) {
         ctx.session.telegramName === checkExistingUser.telegram_id
@@ -79,12 +76,13 @@ bot.start( async (ctx) => {
         console.log('Context Address Data: ', ctx.session.address)
         console.log('Context Private Key Data: ', ctx.session.privateKey);
         console.log('Local chat id: ', ctx.chat.id)
+        const chatIdStr = (ctx.chat.id).toString()
         try {
             const newUser = await prisma.user.create({
                 data: {
                     telegram_id: user,
                     walletAddress: ctx.session.address,
-                    chatId: ctx.chat.id,
+                    chatId: chatIdStr,
                 },
             })
             console.log('New User Created: ', newUser)
@@ -183,7 +181,7 @@ bot.command('send', async (ctx) => {
         if (message !== '' || message !== undefined) {
             const newMessage = `${sender} sent you some Vibes! /n ${message}`
             
-            await ctx.telegram.sendMessage(recipientChatId as number, newMessage)
+            await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
         }
 
         try {
