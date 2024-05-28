@@ -221,6 +221,7 @@ bot.command('send', async (ctx) => {
 //
 // Photo and video rewards. Need to upload from the bot to ipfs and then award token.
 bot.on(message("photo", "media_group_id"), async (ctx) => {
+    console.log('Photo posted')
     let user = ctx.session.telegramName
     console.log(`${user} posted a photo.`)
     if (user.startsWith('@')){
