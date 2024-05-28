@@ -117,7 +117,7 @@ bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /gm - A web 3 neccessity for any bot. \n
         /account - Check your account details. \n
-        /send - ( /send @username amount "Message" ) \n
+        /send | Example: /send @TGHandle Amount(1-100) "Message" ) \n
     `)
 })
 
@@ -150,7 +150,7 @@ bot.command('gm', (ctx) => {
 bot.command('balance', async (ctx) => {
     const user = await getUserByTGName(ctx.session.telegramName)
     if (user !== "User not found.") {
-        return ctx.reply(`Your balance is: ${user.balance}`)
+        return ctx.reply(`Your Vibe balance is: ${user.balance}`)
     }
     
 })
@@ -165,7 +165,6 @@ bot.command('balance', async (ctx) => {
 bot.command('send', async (ctx) => {
     console.log('----------------- Starting new send command -----------------')
     const args = ctx.args
-    const payload = ctx.payload
     let sender
     let recipient
     let recipientChatId
@@ -183,6 +182,9 @@ bot.command('send', async (ctx) => {
     //     }
     // }
 // Handle Telegram Handle
+    if (!(args)){
+        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle Amount(1-100) "Message"')
+    }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
     ) {
