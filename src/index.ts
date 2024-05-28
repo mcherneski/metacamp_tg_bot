@@ -222,25 +222,26 @@ bot.command('send', async (ctx) => {
 // Photo and video rewards. Need to upload from the bot to ipfs and then award token.
 bot.on(message("photo", "media_group_id"), async (ctx) => {
     let user = ctx.session.telegramName
+    console.log(`${user} posted a photo.`)
     if (user.startsWith('@')){
         user = user.toString().replace('@', '')
     }
-
+    let photoCount = 0
     ctx.message.photo.forEach(async (photo) => {
         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
         await awardToken(user, 1)
-        console.log(`${user} has been awarded 1 Vibe for a video.`)
-        return ctx.reply('Thanks for the photo! 📸 \n I just sent you one Vibe.')
-
+        photoCount++
     })
+    console.log(`${user} has been awarded ${photoCount} Vibe(s) for a video.`)
+    return ctx.reply(`Thanks! 📸 ❤️ \n I sent you ${photoCount} Vibes.`)
 })
 
 bot.on(message("video"), async (ctx) => {
     let user = ctx.session.telegramName
+    console.log(`${user} posted a video.`)
     if (user.startsWith('@')){
         user = user.toString().replace('@', '')
     }
-    
     if (ctx.message.video.duration < 5)
         {
             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
