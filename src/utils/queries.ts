@@ -164,14 +164,19 @@ export const getSessions = async () => {
 
    const tomorrow = new Date(today)
    tomorrow.setDate(tomorrow.getDate() + 1)
-
-   const events = await prisma.session.findMany({
-      where: {
-         date: {
-            gte: today,
-            lt: tomorrow
+   try {
+      const events = await prisma.session.findMany({
+         where: {
+            date: {
+               gte: today,
+               lt: tomorrow
+            }
          }
-      }
-   })
-   return events
+      })
+      return events
+   } catch (error) {
+      console.log('Error getting sessions: ', error)
+      return new Error('Error getting sessions')
+   }
+   
 }
