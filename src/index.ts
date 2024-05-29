@@ -177,7 +177,7 @@ bot.command('createSession', async (ctx) => {
 
     try {
         const newEvent = await createSession(name, creator, description, date, time, location)
-
+        console.log('New Event: ', newEvent)
         return ctx.reply(`New event created: ${newEvent}`)
     } catch (error) {
         console.log('Error creating new event: ', error)
