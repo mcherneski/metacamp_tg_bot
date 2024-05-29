@@ -148,13 +148,19 @@ bot.command('balance', async (ctx) => {
 })
 
 bot.command('schedule', async (ctx) => {
-    const todaysEvents = await getSessions()
+    try {
+        const todaysEvents = await getSessions()
 
-    const data = JSON.stringify(todaysEvents)
-    return ctx.reply(`Today's events: \n ${data}`)
+        const data = await JSON.stringify(todaysEvents)
+        return ctx.reply(`Today's events: \n ${data}`)
+    } catch (error) {
+        console.log('Get Events Error: ', error)
+        return ctx.reply('Error fetching events. Please send Mike a message (@MikeCski).')
+    }
+
 })
 
-bot.command('newEvent', async (ctx) => {
+bot.command('createSession', async (ctx) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -164,12 +170,20 @@ bot.command('newEvent', async (ctx) => {
     const name = args[0]
     const description = args[1]
     const date = today
-    const time = args[3]
-    const location = args[4]
+    const time = args[2]
+    const location = args[3]
 
-    const newEvent = await createSession(name, creator, description, date, time, location)
+    console.log(`Creating new event: ${name} by ${creator} on ${date} at ${time} in ${location}`)
 
-    return ctx.reply(`New event created: ${newEvent}`)
+    try {
+        const newEvent = await createSession(name, creator, description, date, time, location)
+
+        return ctx.reply(`New event created: ${newEvent}`)
+    } catch (error) {
+        console.log('Error creating new event: ', error)
+        return ctx.reply('Error creating new event. Please send Mike a message (@MikeCski).')
+    }
+   
 })
 
 // bot.command('showPrivateKey', async (ctx) => {

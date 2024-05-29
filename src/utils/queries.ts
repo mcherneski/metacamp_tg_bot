@@ -133,15 +133,17 @@ export const createSession = async (creator: string, name: string, description: 
    const creatorUser = await prisma.user.findFirst({
       where: { telegram_id: {equals: creator, mode: 'insensitive'}}
    })
+
+   const creatorId = creatorUser?.telegram_id || ''
    
    const newSession = await prisma.session.create({
       data: {
          name: name,
-         time: time,
-         date: date,
-         location,
          description: description,
-         creatorId: creatorUser?.telegram_id
+         date: date,
+         time: time,
+         location: location,
+         creatorId: creatorId
       }
    })
    return newSession

@@ -43,7 +43,7 @@ model Session {
   description String
   date    DateTime
   time    String
-  location: String
+  location String
   creatorId String
   creator   User @relation(fields:[creatorId], references:[telegram_id])
 }
