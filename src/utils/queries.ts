@@ -152,9 +152,6 @@ export const createSession = async (creator: string, name: string, description: 
          time: time,
          location: location,
          facilitator: creatortg
-      },
-      include: {
-         creator: true
       }
    })
    return newSession
