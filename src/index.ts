@@ -152,6 +152,7 @@ bot.command('schedule', async (ctx) => {
         const todaysEvents = await getSessions()
 
         const data = await JSON.stringify(todaysEvents)
+        ctx.reply(`Today's events: \n ${todaysEvents}`)
         return ctx.reply(`Today's events: \n ${data}`)
     } catch (error) {
         console.log('Get Events Error: ', error)
