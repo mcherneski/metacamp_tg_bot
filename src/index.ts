@@ -150,8 +150,8 @@ bot.command('balance', async (ctx) => {
 bot.command('schedule', async (ctx) => {
     try {
         const todaysEvents = await getSessions()
-
-        todaysEvents.forEach( async (event) => {
+        const events = todaysEvents.sort((a,b) => a.time - b.time)
+        events.forEach( async (event) => {
             ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         })
 
@@ -178,7 +178,7 @@ bot.command('createSession', async (ctx) => {
     console.log(`Creating new event: ${name} by ${creator} on ${date} at ${time} in ${location}`)
 
     try {
-        const newEvent = await createSession(name, creator, description, date, time, location)
+        const newEvent = await createSession(name, creator, description, date, Number(time), location)
         const eventData = await JSON.stringify(newEvent)
         console.log('New Event: ', newEvent)
         return ctx.reply(`New event created: ${eventData}`)

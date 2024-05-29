@@ -41,7 +41,7 @@ model Session {
   name  String
   description String
   date    DateTime
-  time    String
+  time    Int
   location String
   facilitator   String
 }

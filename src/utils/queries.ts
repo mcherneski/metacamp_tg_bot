@@ -129,7 +129,7 @@ export const getUserByName = async (firstName: string) => {
    return updatedUser
  }
 
-export const createSession = async (creator: string, name: string, description: string, date: Date, time: string, location: string) => {
+export const createSession = async (creator: string, name: string, description: string, date: Date, time: number, location: string) => {
    let creatortg
    if (creator.startsWith('@')) {
       creatortg = creator.replace('@', '')
@@ -163,7 +163,7 @@ type Event = {
    name: string
    description: string
    date: Date
-   time: string
+   time: number
    location: string
    facilitator: string
 }
