@@ -150,8 +150,8 @@ bot.command('balance', async (ctx) => {
 bot.command('schedule', async (ctx) => {
     try {
         const todaysEvents = await getSessions()
-        const events = todaysEvents.sort((a,b) => a.time - b.time)
-        events.forEach( async (event) => {
+        todaysEvents.sort((a,b) => a.time - b.time)
+        todaysEvents.forEach( async (event) => {
             ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         })
 
