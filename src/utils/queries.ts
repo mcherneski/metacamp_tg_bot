@@ -158,7 +158,17 @@ export const createSession = async (creator: string, name: string, description: 
 
 }
 
-export const getSessions = async () => {
+type Event = {
+   id: number
+   name: string
+   description: string
+   date: Date
+   time: string
+   location: string
+   facilitator: string
+}
+
+export const getSessions = async (): Promise<Event[]> => {
    const today = new Date()
    today.setHours(0, 0, 0, 0)
 
@@ -176,7 +186,7 @@ export const getSessions = async () => {
       return events
    } catch (error) {
       console.log('Error getting sessions: ', error)
-      return new Error('Error getting sessions')
+      return [] // Fix: Return an empty array instead of new Error('Error getting sessions')
    }
    
 }

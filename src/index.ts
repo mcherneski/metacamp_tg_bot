@@ -151,9 +151,10 @@ bot.command('schedule', async (ctx) => {
     try {
         const todaysEvents = await getSessions()
 
-        const data = await JSON.stringify(todaysEvents)
-        ctx.reply(`Today's events: \n ${todaysEvents}`)
-        return ctx.reply(`Today's events: \n ${data}`)
+        todaysEvents.forEach( async (event) => {
+            ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
+        })
+
     } catch (error) {
         console.log('Get Events Error: ', error)
         return ctx.reply('Error fetching events. Please send Mike a message (@MikeCski).')
@@ -178,8 +179,9 @@ bot.command('createSession', async (ctx) => {
 
     try {
         const newEvent = await createSession(name, creator, description, date, time, location)
+        const eventData = await JSON.stringify(newEvent)
         console.log('New Event: ', newEvent)
-        return ctx.reply(`New event created: ${newEvent}`)
+        return ctx.reply(`New event created: ${eventData}`)
     } catch (error) {
         console.log('Error creating new event: ', error)
         return ctx.reply('Error creating new event. Please send Mike a message (@MikeCski).')
