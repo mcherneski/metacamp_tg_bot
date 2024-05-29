@@ -25,7 +25,6 @@ model User {
   received Int     @default(0)
   chatId String
   transactions  Transaction[]
-  sessions        Session[]
 }
 
 model Transaction {
@@ -44,6 +43,5 @@ model Session {
   date    DateTime
   time    String
   location String
-  creatorId String
-  creator   User @relation(fields:[creatorId], references:[telegram_id])
+  facilitator   String
 }
