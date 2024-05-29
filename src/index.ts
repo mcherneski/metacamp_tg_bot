@@ -208,10 +208,12 @@ bot.command('createSession', async (ctx) => {
 bot.command('send', async (ctx) => {
     console.log('----------------- Starting new send command -----------------')
     const args = ctx.args
+    const payload = ctx.payload
     let sender
     let recipient
     let recipientChatId
     console.log('Send args: ', args)
+    console.log('Send payload', payload)
     // if (!(args[0].startsWith('@'))){
     //     console.log('Assessing as first name lookup')
     //     let namedUser: any
@@ -250,7 +252,12 @@ bot.command('send', async (ctx) => {
         if (message !== '' || message !== undefined) {
             const newMessage = `${sender} sent you some Vibes! \n ${message}`
             
-            await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
+            if (ctx.session.chatId !== undefined){
+            await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
+            } else {
+                console.log('New message: ', newMessage)
+            }
+            // await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
         }
 
         try {
