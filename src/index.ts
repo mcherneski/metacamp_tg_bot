@@ -166,22 +166,30 @@ bot.command('createSession', async (ctx) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const creator = ctx.session.telegramName
     console.log('Arguments for new event: ', ctx.args)
     const args = ctx.args
     const eventName = args[0]
     const description = args[1]
     const date = today
-    const time = args[2]
+    const time = Number(args[2])
     const location = args[3]
+    const facilitator = args[4]
 
-    console.log(`Creating new event: ${eventName} by ${creator} on ${date} at ${time} in ${location}`)
+    console.log(`Creating new event: ${eventName} on ${date} at ${time} in ${location}`)
 
     try {
-        const newEvent = await createSession(eventName, creator, description, date, Number(time), location)
-        const eventData = await JSON.stringify(newEvent)
-        console.log('New Event: ', newEvent)
-        return ctx.reply(`New event created: ${eventData}`)
+        const newEvent = await createSession(
+            eventName,
+            description,
+            date,
+            time,
+            location,
+            facilitator
+        );
+
+        const eventData = await JSON.stringify(newEvent);
+        console.log('New Event: ', newEvent);
+        return ctx.reply(`New event created: ${eventData}`);
     } catch (error) {
         console.log('Error creating new event: ', error)
         return ctx.reply('Error creating new event. Please send Mike a message (@MikeCski).')

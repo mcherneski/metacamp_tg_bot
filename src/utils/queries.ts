@@ -129,12 +129,12 @@ export const getUserByName = async (firstName: string) => {
    return updatedUser
  }
 
-export const createSession = async (creator: string, name: string, description: string, date: Date, time: number, location: string) => {
+export const createSession = async ( name: string, description: string, date: Date, time: number, location: string, facilitator: string) => {
    let creatortg
-   if (creator.startsWith('@')) {
-      creatortg = creator.replace('@', '')
+   if (facilitator.startsWith('@')) {
+      creatortg = facilitator.replace('@', '')
    } else {
-      creatortg = creator
+      creatortg = facilitator
    }
    
 
