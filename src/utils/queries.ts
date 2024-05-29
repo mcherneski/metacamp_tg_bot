@@ -176,6 +176,7 @@ export const getSessions = async (): Promise<Event[]> => {
    tomorrow.setDate(tomorrow.getDate() + 1)
    try {
       const events = await prisma.session.findMany({
+         orderBy: [{date: 'asc'}, {time: 'asc'}],
          where: {
             date: {
                gte: today,
