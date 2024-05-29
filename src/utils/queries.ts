@@ -130,8 +130,15 @@ export const getUserByName = async (firstName: string) => {
  }
 
 export const createSession = async (creator: string, name: string, description: string, date: Date, time: string, location: string) => {
+   let creatortg
+   if (creator.startsWith('@')) {
+      creatortg = creator.replace('@', '')
+   } else {
+      creatortg = creator
+   }
+   
    const creatorUser = await prisma.user.findFirst({
-      where: { telegram_id: {equals: creator, mode: 'insensitive'}}
+      where: { telegram_id: {equals: creatortg, mode: 'insensitive'}}
    })
 
    const creatorId = creatorUser?.telegram_id || ''
