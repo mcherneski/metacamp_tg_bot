@@ -99,7 +99,7 @@ export const getUserTransactions = async (telegram_id: string) => {
    }
    return user
  }
- 
+
 export const getUserByName = async (firstName: string) => {
    console.log('Looking for the user by their name values')
 
@@ -129,3 +129,39 @@ export const getUserByName = async (firstName: string) => {
    return updatedUser
  }
 
+export const createSession = async (creator: string, name: string, description: string, date: Date, time: string, location: string) => {
+   const creatorUser = await prisma.user.findFirst({
+      where: { telegram_id: {equals: creator, mode: 'insensitive'}}
+   })
+   
+   const newSession = await prisma.session.create({
+      data: {
+         name: name,
+         time: time,
+         date: date,
+         location,
+         description: description,
+         creatorId: creatorUser?.telegram_id
+      }
+   })
+   return newSession
+
+}
+
+export const getSessions = async () => {
+   const today = new Date()
+   today.setHours(0, 0, 0, 0)
+
+   const tomorrow = new Date(today)
+   tomorrow.setDate(tomorrow.getDate() + 1)
+
+   const events = await prisma.session.findMany({
+      where: {
+         date: {
+            gte: today,
+            lt: tomorrow
+         }
+      }
+   })
+   return events
+}

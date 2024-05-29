@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
+import { awardToken, getSessions, createSession, createUser, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
@@ -145,7 +145,31 @@ bot.command('balance', async (ctx) => {
     if (user !== "User not found.") {
         return ctx.reply(`Your Vibe balance is: ${user.balance}`)
     }
-    
+})
+
+bot.command('schedule', async (ctx) => {
+    const todaysEvents = await getSessions()
+
+    const data = JSON.stringify(todaysEvents)
+    return ctx.reply(`Today's events: \n ${data}`)
+})
+
+bot.command('newEvent', async (ctx) => {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const creator = ctx.session.telegramName
+
+    const args = ctx.args
+    const name = args[0]
+    const description = args[1]
+    const date = today
+    const time = args[3]
+    const location = args[4]
+
+    const newEvent = await createSession(name, creator, description, date, time, location)
+
+    return ctx.reply(`New event created: ${newEvent}`)
 })
 
 // bot.command('showPrivateKey', async (ctx) => {
