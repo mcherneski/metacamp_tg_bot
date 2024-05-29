@@ -167,13 +167,14 @@ bot.command('createSession', async (ctx) => {
     today.setHours(0, 0, 0, 0)
 
     console.log('Arguments for new event: ', ctx.args)
-    const args = ctx.args
-    const eventName = args[0]
-    const description = args[1]
+    const params = ctx.payload
+    console.log('Payload is : ', params)
+    const eventName = params[0]
+    const description = params[1]
     const date = today
-    const time = Number(args[2])
-    const location = args[3]
-    const facilitator = args[4]
+    const time = await Number(params[2])
+    const location = params[3]
+    const facilitator = params[4]
 
     console.log(`Creating new event: ${eventName} on ${date} at ${time} in ${location}`)
 
