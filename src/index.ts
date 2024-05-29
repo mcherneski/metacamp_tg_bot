@@ -169,16 +169,16 @@ bot.command('createSession', async (ctx) => {
     const creator = ctx.session.telegramName
     console.log('Arguments for new event: ', ctx.args)
     const args = ctx.args
-    const name = args[0]
+    const eventName = args[0]
     const description = args[1]
     const date = today
     const time = args[2]
     const location = args[3]
 
-    console.log(`Creating new event: ${name} by ${creator} on ${date} at ${time} in ${location}`)
+    console.log(`Creating new event: ${eventName} by ${creator} on ${date} at ${time} in ${location}`)
 
     try {
-        const newEvent = await createSession(name, creator, description, date, Number(time), location)
+        const newEvent = await createSession(eventName, creator, description, date, Number(time), location)
         const eventData = await JSON.stringify(newEvent)
         console.log('New Event: ', newEvent)
         return ctx.reply(`New event created: ${eventData}`)
