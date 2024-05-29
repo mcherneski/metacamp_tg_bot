@@ -167,7 +167,7 @@ bot.command('createSession', async (ctx) => {
     today.setHours(0, 0, 0, 0)
 
     const creator = ctx.session.telegramName
-
+    console.log('Arguments for new event: ', ctx.args)
     const args = ctx.args
     const name = args[0]
     const description = args[1]
