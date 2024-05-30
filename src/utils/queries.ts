@@ -136,6 +136,8 @@ export const getUserTransactions = async (telegram_id: string) => {
  }
 
 export const createActivity = async ( name: string, description: string, date: Date, time: number, location: string, facilitator: string) => {
+   console.log('Running createActivity query call')
+   console.log('Activity details: ', name, description, date, time, location, facilitator)
    let creatortg
    if (facilitator.startsWith('@')) {
       creatortg = facilitator.replace('@', '')
