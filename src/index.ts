@@ -172,9 +172,9 @@ bot.command('schedule', async (ctx) => {
         // todaysEvents.forEach(async (event) => {
         //     ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         // })
-        const schedule = todaysEvents.map(event => `Name: ${event.name} Time: ${event.time} Location: ${event.location} Facilitator: ${event.facilitator}`).join('\n');
+        const schedule = todaysEvents.map(event => `${event.name} @ ${event.time} - ${event.location} with ${event.facilitator} \n`).join('\n');
         
-        return ctx.reply(`Today's Schedule: \n ${schedule}`)
+        return ctx.reply(`Today's Schedule: \n \n ${schedule}`)
 
     } catch (error) {
         console.log('Get Events Error: ', error)
