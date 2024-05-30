@@ -22,7 +22,7 @@ export const sendTransaction = async (senderTelegram: string, recipientTelegram:
    const sender = await prisma.user.findFirst({
       where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
    })
-   
+
    const recipient = await prisma.user.findFirst({
       where: {telegram_id: {equals: recipientTelegram, mode: 'insensitive'}}
    })
@@ -143,7 +143,7 @@ export const createActivity = async ( name: string, description: string, date: D
       creatortg = facilitator
    }
    try {
-      const newActivity = await prisma.session.create({
+      const newActivity = await prisma.activity.create({
          data: {
             name: name,
             description: description,
@@ -156,7 +156,7 @@ export const createActivity = async ( name: string, description: string, date: D
       return newActivity
    } catch {
       console.log('Error creating activity')
-      return new Error('Error creating session')
+      return new Error('Error creating activity')
    }
 
 
@@ -173,14 +173,14 @@ type Event = {
 }
 
 export const getActivities = async (): Promise<Event[]> => {
-   console.log('Running getSessions query call')
+   console.log('Running getActivities query call')
    const today = new Date()
    today.setHours(0, 0, 0, 0)
 
    const tomorrow = new Date(today)
    tomorrow.setDate(tomorrow.getDate() + 1)
    try {
-      const events = await prisma.session.findMany({
+      const events = await prisma.activity.findMany({
          orderBy: [{date: 'asc'}, {time: 'asc'}],
          where: {
             date: {
