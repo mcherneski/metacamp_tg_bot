@@ -25,6 +25,13 @@ interface SessionData {
 interface AppContext extends Context {
     session: SessionData
 }
+// Not used yet
+// const store = Postgres({
+//     host: process.env.PGHOST,
+//     database: process.env.PGDATABASE,
+//     user: process.env.PGUSER,
+//     password: process.env.PGPASSWORD
+// })
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
 bot.use(session({ defaultSession: () => ({ 
