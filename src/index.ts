@@ -34,6 +34,7 @@ interface AppContext extends Context {
 // })
 
 const bot = new Telegraf<AppContext>(process.env.BOT_TOKEN as string)
+
 bot.use(session({ defaultSession: () => ({ 
     userId: 0,
     telegramName: '',
@@ -51,9 +52,6 @@ bot.use(session({ defaultSession: () => ({
 // Standard Commands
 //
 
-bot.on('text', async (ctx) => {
-
-})
 
 bot.start( async (ctx) => {
     console.log('ChatId: ', ctx.chat.id)
