@@ -182,9 +182,9 @@ bot.command('createActivity', async (ctx) => {
     const eventName = params[0]
     const description = ''
     const date = today
-    const time = await Number(params[2])
-    const location = params[3]
-    const facilitator = params[4]
+    const time = await Number(params[1])
+    const location = params[2]
+    const facilitator = params[3]
 
     console.log(`Creating new event: ${eventName} on ${date} at ${time} in ${location}`)
 
