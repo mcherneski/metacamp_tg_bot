@@ -72,7 +72,7 @@ bot.start( async (ctx) => {
 
     const user = ctx.from.username?.toString() || ''
     ctx.session.telegramName = user
-    await ctx.reply(`🏝️ Welcome to MetaCamp, ${user}! 🌊`)
+    await ctx.reply(`🏝️ Welcome to MetaCash, ${user}! 🌊`)
     await ctx.reply('Hold tight while we create your account...')
     
     console.log('\n New user workflow triggered: ', user)
