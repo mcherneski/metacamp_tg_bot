@@ -148,6 +148,7 @@ bot.command('balance', async (ctx) => {
 })
 
 bot.command('schedule', async (ctx) => {
+    
     try {
         const todaysEvents = await getSessions()
         // todaysEvents.sort((a,b) => a.time - b.time)
