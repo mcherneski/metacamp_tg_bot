@@ -212,6 +212,7 @@ bot.command('send', async (ctx) => {
     let sender
     let recipient
     let recipientChatId
+    let newMessage
     console.log('Send args: ', args)
     console.log('Send payload', payload)
     // if (!(args[0].startsWith('@'))){
@@ -250,14 +251,14 @@ bot.command('send', async (ctx) => {
         console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== '' || message !== undefined) {
-            const newMessage = `${sender} sent you some Vibes! \n ${message}`
+            newMessage = `${sender} sent you some Vibes with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
             if (ctx.session.chatId !== undefined){
-            // await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
+            await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
             } else {
+                ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
                 console.log('New message: ', newMessage)
             }
-            // await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
         }
 
         try {
