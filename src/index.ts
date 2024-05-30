@@ -170,7 +170,7 @@ bot.command('createSession', async (ctx) => {
     const params = ctx.payload
     console.log('Payload is : ', params)
     const eventName = params[0]
-    const description = params[1]
+    const description = ''
     const date = today
     const time = await Number(params[2])
     const location = params[3]
