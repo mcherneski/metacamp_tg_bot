@@ -209,9 +209,9 @@ bot.command('createActivity', async (ctx) => {
             facilitator
         );
 
-        const eventData = await JSON.stringify(newEvent);
+        // const eventData = await JSON.stringify(newEvent);
         console.log('New Event: ', newEvent);
-        return ctx.reply(`New event created: ${eventData}`);
+        return ctx.reply(`New event created!`);
     } catch (error) {
         console.log('Error creating new event: ', error)
         return ctx.reply('Error creating new event. Please send Mike a message (@MikeCski).')
@@ -344,7 +344,7 @@ bot.command('send', async (ctx) => {
 // })
 
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.19')
+    return ctx.reply('Previous Git Id: 032f1be4')
 })
 
 
