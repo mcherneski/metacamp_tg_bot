@@ -172,7 +172,7 @@ bot.command('schedule', async (ctx) => {
         // todaysEvents.forEach(async (event) => {
         //     ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         // })
-        const schedule = todaysEvents.map(event => `${event.name} @ ${event.time} - ${event.location} with ${event.facilitator} \n`).join('\n');
+        const schedule = todaysEvents.map(event => `${event.name} starting at ${event.time} at ${event.location} with ${event.facilitator} \n`).join('\n');
         
         return ctx.reply(`Today's Schedule: \n \n ${schedule}`)
 
