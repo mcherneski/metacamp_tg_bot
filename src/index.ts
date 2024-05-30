@@ -239,13 +239,14 @@ bot.command('send', async (ctx) => {
             recipientChatId = recipientQuery.chatId
         }
         
-        console.log('Recipient Chat Id: ', recipientChatId)
+        
 
         if (message !== '' || message !== undefined) {
             newMessage = `${sender} sent you some Vibes with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
             if (ctx.session.chatId !== undefined){
                 try {
+                    console.log('Recipient Chat Id: ', recipientChatId)
                     await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
                 } catch (error) {
                     ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
