@@ -1,200 +1,215 @@
-import { PrismaClient } from '@prisma/client'
+import { message } from "telegraf/filters";
+import { fetchCoordinapeData } from "./utils";
+const circleId = 31099;
 
-const prisma = new PrismaClient()
-
-export const createUser = async (telegram_id: string, walletAddress: string, chatId: string, firstName?: string, lastName?: string) => {
-   const newUser = await prisma.user.create({
-      data: {
-         telegram_id: telegram_id,
-         walletAddress: walletAddress,
-         chatId: chatId, 
-         firstName: firstName || '',
-         lastName: lastName || ''
-      }
-   })
-   return newUser
-}
-
-export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
-   console.log('----------------------- Running new sendTransaction query call -----------------------')
-   console.log(`sendTransaction query call - Sender: ${senderTelegram}, Recipient: ${recipientTelegram}, Value: ${value}, Message: ${message}`)
-   
-   const sender = await prisma.user.findFirst({
-      where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
-   })
-
-   const recipient = await prisma.user.findFirst({
-      where: {telegram_id: {equals: recipientTelegram, mode: 'insensitive'}}
-   })
-   
-   if (!sender) {
-      throw new Error('Sender not found')
-   }
-
-   if (!recipient) {
-      throw new Error('Recipient not found')
-   }
-
-   console.log(`Sender: ${sender.telegram_id}, Recipient: ${recipient.telegram_id}, Value: ${value}, Message: ${message}`)
-
-   if (sender.balance < value) {
-      throw new Error('Not enough tokens to send')
-   }
-   try {
-      const txn = await prisma.transaction.create({
-         data: {
-            value: value,
-            senderId: sender.id,
-            recipientId: recipient.id,
-            message: message
-         },
-         include: {
-            sender: true,
-         }
-      })
-   
-      await prisma.user.update({
-         where: {telegram_id: sender.telegram_id},
-         data: {balance: {decrement: value}}
-      })
-   
-      await prisma.user.update({
-         where: {telegram_id: recipient.telegram_id},
-         data: {received: {increment: value}}
-      })
-      
-      console.log('Transaction successful')
-
-      return txn
-
-   } catch (error) {
-      console.log('Error sending transaction: ', error)
-      return new Error('Error sending transaction')
-   }
-   
-}
-
-export const getUserTransactions = async (telegram_id: string) => {
-   // Fetch user by their telegram_id
-   const user = await prisma.user.findFirst({ where: { telegram_id: { equals: telegram_id, mode: 'insensitive'}}
-})
- 
-   if (!user) {
-     throw new Error('User not found');
-   }
- 
-   // Fetch transactions for the user
-   const transactions = await prisma.transaction.findMany({
-     where: {
-       senderId: user.id,
-     },
-   });
- 
-   return transactions;
- }
-
- export const getUserByTGName = async (telegram_id: string) => {
-   console.log('----------------- Starting new getUserByTGName command -----------------')
-   const user = await prisma.user.findFirst({ where : {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
-
-   if (!user) {
-      console.log('User not found')
-      return "User not found."
-   }
-   console.log('User found: ', user)
-   return user
- }
-
-// Not used right now
-// export const getUserByName = async (firstName: string) => {
-//    console.log('Looking for the user by their name values')
-
-//    const user = await prisma.user.findMany({ where: { firstName: { equals: firstName, mode: 'insensitive'}}})
-
-//    if (Array.isArray(user) && user.length > 1){
-//       console.log('User array: ', user)
-//    }
-//    if (!user) {
-//       return "User not found"
-//    }
-
-//    return user
-// }
-
- export const awardToken = async (telegram_id: string, amount: number) => {
-   const user = await prisma.user.findFirst({where: {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
-   if (!user) {
-      throw new Error('User not found')
-   }
-
-   const updatedUser = await prisma.user.update({
-      where: {telegram_id},
-      data: {received: {increment: amount}}
-   })
-
-   return updatedUser
- }
-
-export const createActivity = async ( name: string, description: string, date: Date, time: number, location: string, facilitator: string) => {
-   console.log('Running createActivity query call')
-   console.log('Activity details: ', name, description, date, time, location, facilitator)
-   let creatortg
-   if (facilitator.startsWith('@')) {
-      creatortg = facilitator.replace('@', '')
-   } else {
-      creatortg = facilitator
-   }
-   try {
-      const newActivity = await prisma.activity.create({
-         data: {
-            name: name,
-            description: description,
-            date: date,
-            time: time,
-            location: location,
-            facilitator: creatortg
-         }
-      })
-      return newActivity
-   } catch (error) {
-      console.log('Error creating activity', error)
-      return error
-   }
-
-
-}
-
-type Event = {
-   id: number
-   name: string
-   description: string
-   date: Date
-   time: number
-   location: string
-   facilitator: string
-}
-
-export const getActivities = async (): Promise<Event[]> => {
-   console.log('Running getActivities query call')
-   const today = new Date()
-   today.setHours(0, 0, 0, 0)
-
-   const tomorrow = new Date(today)
-   tomorrow.setDate(tomorrow.getDate() + 1)
-   try {
-      const events = await prisma.activity.findMany({
-         orderBy: [{date: 'asc'}, {time: 'asc'}],
-         where: {
-            date: {
-               gte: today,
-               lt: tomorrow
+export const getAllUsers = async () => {
+  const query = `
+        query UsersQuery {
+            users {
+            give_token_received
+            give_token_remaining
+            id
+            circle_id
+            profile {
+                name
+                telegram_username
             }
-         }
-      })
-      return events
-   } catch (error) {
-      console.log('Error getting sessions: ', error)
-      return [] // Fix: Return an empty array instead of new Error('Error getting sessions')
-   }
-   
-}
+            }
+        }      
+    `;
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
+  return data;
+};
+
+export const getUserByUsername = async (username: string) => {
+  const query = `
+        query GetUserByUsername {
+            users(where: {profile: {name: {_eq: "${username}"}}}) {
+            id
+            give_token_received
+            give_token_remaining
+            }
+        }
+      `;
+
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
+
+  return data;
+};
+
+export const getUserById = async (id: string) => {
+  const query = `
+        query GetUserById($_eq: bigint = "${id}") {
+            users(where: {id: {_eq: $_eq}}) {
+            profile {
+                address
+                created_at
+                name
+                telegram_username
+                updated_at
+            }
+            give_token_received
+            give_token_remaining
+            circle_id
+            id
+            }
+        }
+      `;
+  const response = await fetchCoordinapeData(query);
+  const data = await JSON.stringify(response);
+
+  return data;
+};
+
+export const createUser = async (
+  telegramName: string,
+  walletAddress: string
+) => {
+  const date = new Date();
+  console.log("Create User Query: ", date.toLocaleDateString());
+
+  const mutation = `
+    mutation CreateUser{
+        createUsers(
+          payload: {circle_id: ${circleId}, users: {name: "${telegramName}", entrance: "0", address: "${walletAddress}"}}
+        ) {
+          id
+          UserResponse {
+            id
+            created_at
+            circle_id
+            profile {
+                id
+                name
+              }
+          }
+        }
+      }
+    `;
+  console.log("Create User Mutation: ", mutation);
+  const response = await fetchCoordinapeData(mutation);
+
+  const data = await JSON.stringify(response);
+  console.log("Create User Response: ", data);
+  return data;
+};
+
+export const balanceCheck = async (username: string, amount: number) => {
+  const userBalance = await getUserByUsername(username);
+  console.log("User Balance: ", userBalance);
+  const data = await JSON.parse(userBalance);
+  console.log("User Balance Data: ", data);
+  const balance = data.data.users[0].give_token_remaining;
+
+  console.log(
+    `${username} has ${balance} tokens remaining. They are attempting to send ${amount} tokens.`
+  );
+
+  if (balance >= amount) {
+    console.log("User has enough tokens to send.");
+    return true;
+  }
+
+  return false;
+};
+
+export const sendToken = async (
+  sender: string,
+  recipient: string,
+  amount: number,
+  message?: string
+) => {
+  // Send amounts already verified in the bot code.
+  console.log(
+    `Send Token Function: ${sender} is sending ${amount} to ${recipient} with message ${message}`
+  );
+  // Get sender information
+  const senderResponse = await getUserByUsername(sender);
+  console.log("Sender Response: ", senderResponse)
+  const senderData = await JSON.parse(senderResponse)
+  console.log(`Sender Data: ${senderData}`)
+
+  const senderId: number = senderData.data.users[0].id
+  let currentSenderBalance = Number(senderData.data.users[0].give_token_remaining)
+  let newSenderBalance = currentSenderBalance - amount
+  console.log(
+    `Current sender balance is ${currentSenderBalance} new balance will be ${newSenderBalance}`
+  )
+
+  const recipientResponse = await getUserByUsername(recipient)
+  console.log("Recipient response: ", recipientResponse)
+  const recipientData = await JSON.parse(recipientResponse)
+  console.log(`Recipient Data: ${recipientData}`)
+
+  const recipientId: number = recipientData.data.users[0].id
+  let currentRecipientBalance = Number(recipientData.data.users[0].give_token_received)
+  let newRecipientBalance: number = currentRecipientBalance + amount
+  console.log(
+    `Current recipient received balance is ${currentRecipientBalance}, new received balance will be ${newRecipientBalance}`
+  );
+
+  console.log(`Sender: ${senderId} recipient: ${recipientId} amount: ${amount} message: ${message}`)
+
+    try {
+
+        const sendTokens = `
+        mutation SendTokens {
+            updateAllocations(
+              payload: {circle_id: ${circleId}, user_id: ${senderId}, allocations: {recipient_id: ${recipientId}, note: "${message}", tokens: ${amount}}}
+            ) {
+              user_id
+              user {
+                give_token_received
+                give_token_remaining
+                profile {
+                  name
+                }
+                sent_gifts {
+                  recipient {
+                    id
+                    profile {
+                      name
+                    }
+                    give_token_received
+                    give_token_remaining
+                  }
+                }
+              }
+            }
+          }`
+        const response = await fetchCoordinapeData(sendTokens);
+        console.log('SendToken response: ', response)
+        const data = await JSON.stringify(response);
+        return data
+  } catch (error) {
+    const errorString = JSON.stringify({
+        status: 'Update Allocation Failed',
+        error: error
+    })
+    return errorString
+  }
+};
+
+export const sendReward = async (
+  recipient: string,
+  amount: number,
+  note: string
+) => {
+  // ADMIN FUNCTION FOR REWARDING USERS FOR ACTIONS
+  // Pending sendMetaCash function working.
+
+  const mutation = `
+    mutation Reward {
+        updateAllocations(
+          payload: {circle_id: ${circleId}, allocations: {note: ${note}, recipient_id: ${recipient}, tokens: ${amount}}}
+        )
+      }
+    `;
+
+  const response = await fetchCoordinapeData(mutation);
+  const data = await JSON.stringify(response);
+
+  return data;
+};

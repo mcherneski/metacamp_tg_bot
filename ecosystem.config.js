@@ -6,7 +6,7 @@ module.exports = {
             NODE_ENV: 'production'
         },
         watch: true,
-        log_file: '~/metacamp_tg_bot.log',
+        log_file: '~/coordinape-bot.log',
         merge_logs: true,
         time: true,
         autorestart: true
