@@ -188,7 +188,7 @@ bot.command('createActivity', async (ctx) => {
     today.setHours(0, 0, 0, 0)
 
     console.log('Arguments for new event: ', ctx.args)
-    const params = ctx.payload
+    const params = ctx.args
     console.log('Payload is : ', params)
     const eventName = params[0]
     const description = ''
