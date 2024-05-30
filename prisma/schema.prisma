@@ -36,7 +36,7 @@ model Transaction {
   sender        User?     @relation(fields: [senderId], references: [id])
 }
 
-model Session {
+model Activity {
   id    Int @id @default(autoincrement())
   name  String
   description String

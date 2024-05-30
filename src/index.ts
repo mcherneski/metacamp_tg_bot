@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getSessions, createSession, createUser, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
+import { awardToken, getActivities, createActivity, createUser, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
@@ -54,6 +54,7 @@ bot.start( async (ctx) => {
     if (ctx.session.telegramName && ctx.session.userId) {
         return ctx.reply('You are already registered! Type /help for a list of commands.')
     }
+
     const checkExistingUser = await getUserByTGName(ctx.from.username || '')
     if (checkExistingUser !== "User not found." && checkExistingUser.telegram_id === ctx.from.username) {
         ctx.session.telegramName === checkExistingUser.telegram_id
@@ -154,8 +155,7 @@ bot.command('balance', async (ctx) => {
 bot.command('schedule', async (ctx) => {
     console.log('Running schedule command')
     try {
-        const todaysEvents = await getSessions()
-        // todaysEvents.sort((a,b) => a.time - b.time)
+        const todaysEvents = await getActivities()
         todaysEvents.forEach( async (event) => {
             ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         })
@@ -167,7 +167,7 @@ bot.command('schedule', async (ctx) => {
 
 })
 
-bot.command('createSession', async (ctx) => {
+bot.command('createActivity', async (ctx) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
@@ -184,7 +184,7 @@ bot.command('createSession', async (ctx) => {
     console.log(`Creating new event: ${eventName} on ${date} at ${time} in ${location}`)
 
     try {
-        const newEvent = await createSession(
+        const newEvent = await createActivity(
             eventName,
             description,
             date,
@@ -244,7 +244,7 @@ bot.command('send', async (ctx) => {
         }
 
         if (message !== '' || message !== undefined) {
-            newMessage = `${sender} sent you some Vibes with a message: \n ${message}`
+            newMessage = `${sender} sent you some MetaCoins with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
             if (ctx.session.chatId !== undefined){
                 try {
@@ -264,7 +264,7 @@ bot.command('send', async (ctx) => {
             if (sender !== ''){
                 console.log('Sending transaction...')
                 await sendTransaction(sender, recipient, amount, message)
-                return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
+                return ctx.reply(`Sent ${amount} MetaCoins to ${recipient}!`)
             }
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
@@ -291,7 +291,7 @@ bot.command('send', async (ctx) => {
 //         photoCount++
 //     })
 //     console.log(`${user} has been awarded ${photoCount} Vibe(s) for a video.`)
-//     return ctx.reply(`Thanks! 📸 ❤️ \n I sent you ${photoCount} Vibes.`)
+//     return ctx.reply(`Thanks! 📸 ❤️ \n I sent you ${photoCount} MetaCoins.`)
 // })
 
 // bot.on(message("video"), async (ctx) => {

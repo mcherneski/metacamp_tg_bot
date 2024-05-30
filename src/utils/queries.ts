@@ -132,7 +132,7 @@ export const getUserByName = async (firstName: string) => {
    return updatedUser
  }
 
-export const createSession = async ( name: string, description: string, date: Date, time: number, location: string, facilitator: string) => {
+export const createActivity = async ( name: string, description: string, date: Date, time: number, location: string, facilitator: string) => {
    let creatortg
    if (facilitator.startsWith('@')) {
       creatortg = facilitator.replace('@', '')
@@ -169,7 +169,7 @@ type Event = {
    facilitator: string
 }
 
-export const getSessions = async (): Promise<Event[]> => {
+export const getActivities = async (): Promise<Event[]> => {
    console.log('Running getSessions query call')
    const today = new Date()
    today.setHours(0, 0, 0, 0)
