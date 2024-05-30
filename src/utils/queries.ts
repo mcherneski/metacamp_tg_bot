@@ -154,9 +154,9 @@ export const createActivity = async ( name: string, description: string, date: D
          }
       })
       return newActivity
-   } catch {
-      console.log('Error creating activity')
-      return new Error('Error creating activity')
+   } catch (error) {
+      console.log('Error creating activity', error)
+      return error
    }
 
 
