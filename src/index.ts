@@ -161,9 +161,20 @@ bot.command('schedule', async (ctx) => {
     console.log('Running schedule command')
     try {
         const todaysEvents = await getActivities()
-        todaysEvents.forEach( async (event) => {
-            ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
-        })
+        // const schedule: { [key: string]: { name: string, time: string, location: string } } = todaysEvents.reduce((acc: { [key: string]: { time: string, location: string } }, event) => {
+        //     acc[event.name] = {
+        //         time: event.time,
+        //         location: event.location
+        //     }
+        //     return acc
+        // }, {})
+
+        // todaysEvents.forEach(async (event) => {
+        //     ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
+        // })
+        const schedule = todaysEvents.map(event => `${event.name} ${event.time} ${event.location}`).join('\n');
+        
+        return ctx.reply(`Today's Schedule: \n ${schedule}`)
 
     } catch (error) {
         console.log('Get Events Error: ', error)
