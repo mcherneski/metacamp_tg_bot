@@ -253,7 +253,7 @@ bot.command('send', async (ctx) => {
             const newMessage = `${sender} sent you some Vibes! \n ${message}`
             
             if (ctx.session.chatId !== undefined){
-            await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
+            // await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
             } else {
                 console.log('New message: ', newMessage)
             }
