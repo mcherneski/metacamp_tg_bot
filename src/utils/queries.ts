@@ -139,25 +139,23 @@ export const createSession = async ( name: string, description: string, date: Da
    } else {
       creatortg = facilitator
    }
-   
+   try {
+      const newSession = await prisma.session.create({
+         data: {
+            name: name,
+            description: description,
+            date: date,
+            time: time,
+            location: location,
+            facilitator: creatortg
+         }
+      })
+      return newSession
+   } catch {
+      console.log('Error creating session')
+      // return new Error('Error creating session')
+   }
 
-   // const creatorUser = await prisma.user.findFirst({
-   //    where: { telegram_id: {equals: creatortg, mode: 'insensitive'}}
-   // })
-
-   // const creatorId = creatorUser.id
-   
-   const newSession = await prisma.session.create({
-      data: {
-         name: name,
-         description: description,
-         date: date,
-         time: time,
-         location: location,
-         facilitator: creatortg
-      }
-   })
-   return newSession
 
 }
 
@@ -172,6 +170,7 @@ type Event = {
 }
 
 export const getSessions = async (): Promise<Event[]> => {
+   console.log('Running getSessions query call')
    const today = new Date()
    today.setHours(0, 0, 0, 0)
 

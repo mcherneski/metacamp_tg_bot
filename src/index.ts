@@ -44,6 +44,10 @@ bot.use(session({ defaultSession: () => ({
 // Standard Commands
 //
 
+bot.on('text', async (ctx) => {
+
+})
+
 bot.start( async (ctx) => {
     console.log('ChatId: ', ctx.chat.id)
     // Check for existing users
@@ -148,7 +152,7 @@ bot.command('balance', async (ctx) => {
 })
 
 bot.command('schedule', async (ctx) => {
-    
+    console.log('Running schedule command')
     try {
         const todaysEvents = await getSessions()
         // todaysEvents.sort((a,b) => a.time - b.time)
@@ -317,7 +321,7 @@ bot.command('send', async (ctx) => {
 // })
 
 bot.command('version', (ctx) => {
-    return ctx.reply('Version 0.16')
+    return ctx.reply('Version 0.19')
 })
 
 
