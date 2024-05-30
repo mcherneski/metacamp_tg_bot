@@ -120,7 +120,7 @@ bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /gm - A web 3 neccessity for any bot. \n
         /account - Check your account details. \n
-        /send | Example: /send @TGHandle Amount(1-100) "Message" ) \n
+        /send | Example: /send @TGHandle ## "Message" ) \n
     `)
 })
 
@@ -172,7 +172,7 @@ bot.command('schedule', async (ctx) => {
         // todaysEvents.forEach(async (event) => {
         //     ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
         // })
-        const schedule = todaysEvents.map(event => `${event.name} ${event.time} ${event.location}`).join('\n');
+        const schedule = todaysEvents.map(event => `Name: ${event.name} Time: ${event.time} Location: ${event.location} Facilitator: ${event.facilitator}`).join('\n');
         
         return ctx.reply(`Today's Schedule: \n ${schedule}`)
 
