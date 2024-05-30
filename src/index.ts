@@ -238,8 +238,6 @@ bot.command('send', async (ctx) => {
         if (recipientQuery !== 'User not found.') {
             recipientChatId = recipientQuery.chatId
         }
-        
-        
 
         if (message !== '' || message !== undefined) {
             newMessage = `${sender} sent you some Vibes with a message: \n ${message}`
@@ -249,6 +247,7 @@ bot.command('send', async (ctx) => {
                     console.log('Recipient Chat Id: ', recipientChatId)
                     await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
                 } catch (error) {
+                    console.log(`Error sending message to recipient: ${error}`)
                     ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
                 }
             } else {
@@ -274,38 +273,38 @@ bot.command('send', async (ctx) => {
 // Interaction Commands
 //
 // Photo and video rewards. Need to upload from the bot to ipfs and then award token.
-bot.on(message("photo", "media_group_id"), async (ctx) => {
-    console.log('Photo posted')
-    let user = ctx.session.telegramName
-    console.log(`${user} posted a photo.`)
-    if (user.startsWith('@')){
-        user = user.toString().replace('@', '')
-    }
-    let photoCount = 0
-    ctx.message.photo.forEach(async (photo) => {
-        //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-        await awardToken(user, 1)
-        photoCount++
-    })
-    console.log(`${user} has been awarded ${photoCount} Vibe(s) for a video.`)
-    return ctx.reply(`Thanks! 📸 ❤️ \n I sent you ${photoCount} Vibes.`)
-})
+// bot.on(message("photo", "media_group_id"), async (ctx) => {
+//     console.log('Photo posted')
+//     let user = ctx.session.telegramName
+//     console.log(`${user} posted a photo.`)
+//     if (user.startsWith('@')){
+//         user = user.toString().replace('@', '')
+//     }
+//     let photoCount = 0
+//     ctx.message.photo.forEach(async (photo) => {
+//         //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
+//         await awardToken(user, 1)
+//         photoCount++
+//     })
+//     console.log(`${user} has been awarded ${photoCount} Vibe(s) for a video.`)
+//     return ctx.reply(`Thanks! 📸 ❤️ \n I sent you ${photoCount} Vibes.`)
+// })
 
-bot.on(message("video"), async (ctx) => {
-    let user = ctx.session.telegramName
-    console.log(`${user} posted a video.`)
-    if (user.startsWith('@')){
-        user = user.toString().replace('@', '')
-    }
-    if (ctx.message.video.duration < 5)
-        {
-            //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
-            await awardToken(user, 1)
-            console.log(`${user} has been awarded 1 Vibe for a video.`)
-            return ctx.reply('Thanks for the video! 🤩 \n I just sent you one Vibe.')
-        }
-    console.log('Video posted')
-})
+// bot.on(message("video"), async (ctx) => {
+//     let user = ctx.session.telegramName
+//     console.log(`${user} posted a video.`)
+//     if (user.startsWith('@')){
+//         user = user.toString().replace('@', '')
+//     }
+//     if (ctx.message.video.duration < 5)
+//         {
+//             //Need to copy the image to a thread somewhere. Maybe copy to ipfs?
+//             await awardToken(user, 1)
+//             console.log(`${user} has been awarded 1 Vibe for a video.`)
+//             return ctx.reply('Thanks for the video! 🤩 \n I just sent you one Vibe.')
+//         }
+//     console.log('Video posted')
+// })
 
 // 
 // Admin Commands
