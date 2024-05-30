@@ -234,6 +234,7 @@ bot.command('send', async (ctx) => {
         sender = ctx.message.from.username || ''
         
         const recipientQuery = await getUserByTGName(recipient)
+        console.log('Recipient Query: ', recipientQuery)
         if (recipientQuery !== 'User not found.') {
             recipientChatId = recipientQuery.chatId
         }
