@@ -18,9 +18,11 @@ export const createUser = async (telegram_id: string, walletAddress: string, cha
 export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
    console.log('----------------------- Running new sendTransaction query call -----------------------')
    console.log(`sendTransaction query call - Sender: ${senderTelegram}, Recipient: ${recipientTelegram}, Value: ${value}, Message: ${message}`)
+   
    const sender = await prisma.user.findFirst({
       where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
    })
+   
    const recipient = await prisma.user.findFirst({
       where: {telegram_id: {equals: recipientTelegram, mode: 'insensitive'}}
    })
@@ -93,30 +95,31 @@ export const getUserTransactions = async (telegram_id: string) => {
 
  export const getUserByTGName = async (telegram_id: string) => {
    console.log('----------------- Starting new getUserByTGName command -----------------')
-   console.log(`Telegram ID: ${telegram_id}`)
    const user = await prisma.user.findFirst({ where : {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
 
    if (!user) {
       console.log('User not found')
       return "User not found."
    }
+   console.log('User found: ', user)
    return user
  }
 
-export const getUserByName = async (firstName: string) => {
-   console.log('Looking for the user by their name values')
+// Not used right now
+// export const getUserByName = async (firstName: string) => {
+//    console.log('Looking for the user by their name values')
 
-   const user = await prisma.user.findMany({ where: { firstName: { equals: firstName, mode: 'insensitive'}}})
+//    const user = await prisma.user.findMany({ where: { firstName: { equals: firstName, mode: 'insensitive'}}})
 
-   if (Array.isArray(user) && user.length > 1){
-      console.log('User array: ', user)
-   }
-   if (!user) {
-      return "User not found"
-   }
+//    if (Array.isArray(user) && user.length > 1){
+//       console.log('User array: ', user)
+//    }
+//    if (!user) {
+//       return "User not found"
+//    }
 
-   return user
-}
+//    return user
+// }
 
  export const awardToken = async (telegram_id: string, amount: number) => {
    const user = await prisma.user.findFirst({where: {telegram_id: { equals: telegram_id, mode: 'insensitive'}}})
@@ -140,7 +143,7 @@ export const createActivity = async ( name: string, description: string, date: D
       creatortg = facilitator
    }
    try {
-      const newSession = await prisma.session.create({
+      const newActivity = await prisma.session.create({
          data: {
             name: name,
             description: description,
@@ -150,10 +153,10 @@ export const createActivity = async ( name: string, description: string, date: D
             facilitator: creatortg
          }
       })
-      return newSession
+      return newActivity
    } catch {
-      console.log('Error creating session')
-      // return new Error('Error creating session')
+      console.log('Error creating activity')
+      return new Error('Error creating session')
    }
 
 

@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getActivities, createActivity, createUser, getUserByName, getUserByTGName, sendTransaction } from './utils/queries';
+import { awardToken, getActivities, createActivity, createUser, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
@@ -229,12 +229,16 @@ bot.command('send', async (ctx) => {
         ) {
         recipient = args[0]
         console.log(`Recipient: ${recipient}`)
+
         if (recipient.startsWith('@')) {
             recipient = recipient.replace('@', '')
         }
+        console.log(`Recipient: ${recipient}`)
         
         const amount: number = Number(args[1])
+        console.log(`Amount: ${amount}`)
         const message = args[2]
+        console.log(`Message: ${message}`)
         sender = ctx.message.from.username || ''
         
         const recipientQuery = await getUserByTGName(recipient)
@@ -242,14 +246,17 @@ bot.command('send', async (ctx) => {
         if (recipientQuery !== 'User not found.') {
             recipientChatId = recipientQuery.chatId
         }
+        console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== '' || message !== undefined) {
+            console.log('Message detected in args')
             newMessage = `${sender} sent you some MetaCoins with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
-            if (ctx.session.chatId !== undefined){
+
+            if (recipientChatId !== undefined){
                 try {
                     console.log('Recipient Chat Id: ', recipientChatId)
-                    await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
+                    await ctx.telegram.sendMessage(Number(recipientChatId), newMessage)
                 } catch (error) {
                     console.log(`Error sending message to recipient: ${error}`)
                     ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
@@ -268,7 +275,7 @@ bot.command('send', async (ctx) => {
             }
         } catch (error){
             console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
-            return ctx.reply('Error. Please dm Mike. (@MikeCski)')
+            return ctx.reply('Error. Please DM Mike. (@MikeCski)')
         }
     }
 })
