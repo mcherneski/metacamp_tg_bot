@@ -206,7 +206,7 @@ bot.command('createSession', async (ctx) => {
 
 
 bot.command('send', async (ctx) => {
-    console.log('----------------- Starting new send command -----------------')
+    console.log('----------------- Starting new send command started -----------------')
     const args = ctx.args
     const payload = ctx.payload
     let sender
@@ -215,19 +215,7 @@ bot.command('send', async (ctx) => {
     let newMessage
     console.log('Send args: ', args)
     console.log('Send payload', payload)
-    // if (!(args[0].startsWith('@'))){
-    //     console.log('Assessing as first name lookup')
-    //     let namedUser: any
-    //     namedUser = await getUserByName(args[0])
-        
-    //     if (Array.isArray(namedUser)) {
-    //        const MarkupButtons = namedUser.map( user => Markup.button.callback(user.telegram_id, `select${user.id}`))
-    //        const keyboard = Markup.inlineKeyboard(MarkupButtons)
 
-    //        ctx.reply
-    //     }
-    // }
-// Handle Telegram Handle
     if ((args.length === 0 )){
         return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle Amount(1-100) "Message"')
     }
@@ -263,7 +251,7 @@ bot.command('send', async (ctx) => {
 
         try {
             if (sender !== ''){
-                console.log('Sending transaction')
+                console.log('Sending transaction...')
                 await sendTransaction(sender, recipient, amount, message)
                 return ctx.reply(`Sent ${amount} Vibes to ${recipient}!`)
             }
