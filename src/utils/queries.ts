@@ -17,6 +17,7 @@ export const createUser = async (telegram_id: string, walletAddress: string, cha
 
 export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
    console.log('----------------------- Running new sendTransaction query call -----------------------')
+   console.log(`sendTransaction query call - Sender: ${senderTelegram}, Recipient: ${recipientTelegram}, Value: ${value}, Message: ${message}`)
    const sender = await prisma.user.findFirst({
       where: { telegram_id: {equals: senderTelegram, mode: 'insensitive'}}
    })
