@@ -232,7 +232,7 @@ bot.command('send', async (ctx) => {
     }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
-    ) {
+        ) {
         recipient = args[0]
         if (recipient.startsWith('@')) {
             recipient = recipient.replace('@', '')
@@ -251,7 +251,7 @@ bot.command('send', async (ctx) => {
 
         if (message !== '' || message !== undefined) {
             const newMessage = `${sender} sent you some Vibes! \n ${message}`
-            
+            console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
             if (ctx.session.chatId !== undefined){
             // await ctx.telegram.sendMessage(Number(ctx.session.chatId), newMessage)
             } else {
