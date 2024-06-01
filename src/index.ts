@@ -118,9 +118,12 @@ bot.start( async (ctx) => {
 
 bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
-        /gm - A web 3 neccessity for any bot. \n
+        /send | Example: /send @YaylorMewn 10 "Thanks for the pizza!" ) \n
         /account - Check your account details. \n
-        /send | Example: /send @TGHandle (Number (1-100)) "Message" ) \n
+        /createactivity | Example: /createactivity "Pizza Party" 1115 "Restaurant" "Mike" \n
+        /schedule - Show today's activity schedule. \n
+        /gm - A web 3 neccessity for any bot. \n
+        /help - Show this message. \n
     `)
 })
 
@@ -177,9 +180,13 @@ bot.command('schedule', async (ctx) => {
 
 })
 
-bot.command('createActivity', async (ctx) => {
+bot.command('createactivity', async (ctx) => {
+    
     console.log('Arguments for new event: ', ctx.args)
     const params = ctx.args
+    if ((params.length === 0 )){
+        return ctx.reply('Please provide the recipient and amount. \n Example: /createactivity "Pizza Party" 1300 "Restaurant" "Mike"')
+    }
     console.log('Payload is : ', params)
     const eventName = params[0]
     const description = ''
