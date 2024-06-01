@@ -161,17 +161,7 @@ bot.command('schedule', async (ctx) => {
     console.log('Running schedule command')
     try {
         const todaysEvents = await getActivities()
-        // const schedule: { [key: string]: { name: string, time: string, location: string } } = todaysEvents.reduce((acc: { [key: string]: { time: string, location: string } }, event) => {
-        //     acc[event.name] = {
-        //         time: event.time,
-        //         location: event.location
-        //     }
-        //     return acc
-        // }, {})
-
-        // todaysEvents.forEach(async (event) => {
-        //     ctx.reply(`${event.name} at ${event.time} in ${event.location}`)
-        // })
+        console.log('Todays Events: ', todaysEvents)
         const schedule = todaysEvents.map(event => `${event.name} starting at ${event.time} at ${event.location} with ${event.facilitator} \n`).join('\n');
         
         return ctx.reply(`Today's Schedule: \n \n ${schedule}`)
@@ -184,16 +174,21 @@ bot.command('schedule', async (ctx) => {
 })
 
 bot.command('createActivity', async (ctx) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
 
+    
     console.log('Arguments for new event: ', ctx.args)
     const params = ctx.args
     console.log('Payload is : ', params)
     const eventName = params[0]
     const description = ''
-    const date = today
+
+    const date = new Date()
     const time = await Number(params[1])
+    const hours = Math.floor(time / 100)
+    const minutes = time % 100
+
+    date.setHours(hours, minutes)
+
     const location = params[2]
     const facilitator = params[3]
 
@@ -238,7 +233,7 @@ bot.command('send', async (ctx) => {
     console.log('Send payload', payload)
 
     if ((args.length === 0 )){
-        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle Amount(1-100) "Message"')
+        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle ## "Message"')
     }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
@@ -264,7 +259,7 @@ bot.command('send', async (ctx) => {
         }
         console.log('Recipient Chat Id: ', recipientChatId)
 
-        if (message !== '' || message !== undefined) {
+        if (message !== undefined && message !== '') {
             console.log('Message detected in args')
             newMessage = `${sender} sent you some MetaCoins with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)

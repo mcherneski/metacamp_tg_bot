@@ -139,6 +139,7 @@ export const createActivity = async ( name: string, description: string, date: D
    console.log('Running createActivity query call')
    console.log('Activity details: ', name, description, date, time, location, facilitator)
    let creatortg
+
    if (facilitator.startsWith('@')) {
       creatortg = facilitator.replace('@', '')
    } else {
@@ -176,18 +177,18 @@ type Event = {
 
 export const getActivities = async (): Promise<Event[]> => {
    console.log('Running getActivities query call')
-   const today = new Date()
-   today.setHours(0, 0, 0, 0)
+   const startDay = new Date()
+   startDay.setHours(6, 0, 0, 0)
 
-   const tomorrow = new Date(today)
-   tomorrow.setDate(tomorrow.getDate() + 1)
+   const endDay = new Date()
+   endDay.setHours(23,59,0,0)
    try {
       const events = await prisma.activity.findMany({
-         orderBy: [{date: 'asc'}, {time: 'asc'}],
+         orderBy: [{date: 'asc'}],
          where: {
             date: {
-               gte: today,
-               lt: tomorrow
+               gte: startDay,
+               lt: endDay
             }
          }
       })
