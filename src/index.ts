@@ -120,7 +120,7 @@ bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /gm - A web 3 neccessity for any bot. \n
         /account - Check your account details. \n
-        /send | Example: /send @TGHandle ## "Message" ) \n
+        /send | Example: /send @TGHandle (Number (1-100)) "Message" ) \n
     `)
 })
 
@@ -162,7 +162,11 @@ bot.command('schedule', async (ctx) => {
     try {
         const todaysEvents = await getActivities()
         console.log('Todays Events: ', todaysEvents)
-        const schedule = todaysEvents.map(event => `${event.name} starting at ${event.time} at ${event.location} with ${event.facilitator} \n`).join('\n');
+        const schedule = todaysEvents.map(event => {
+            const eventDate = new Date(event.date)
+            const timeStr = eventDate.toLocaleTimeString('en-us', {hour: '2-digit', minute: '2-digit', hour12: true})
+            return `${event.name} starting at ${timeStr} in ${event.location} \n \n`
+        }).join('\n')
         
         return ctx.reply(`Today's Schedule: \n \n ${schedule}`)
 
@@ -174,8 +178,6 @@ bot.command('schedule', async (ctx) => {
 })
 
 bot.command('createActivity', async (ctx) => {
-
-    
     console.log('Arguments for new event: ', ctx.args)
     const params = ctx.args
     console.log('Payload is : ', params)
@@ -233,7 +235,7 @@ bot.command('send', async (ctx) => {
     console.log('Send payload', payload)
 
     if ((args.length === 0 )){
-        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle ## "Message"')
+        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle (Number (1 to 100)) "Message"')
     }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
