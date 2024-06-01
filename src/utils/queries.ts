@@ -16,6 +16,7 @@ export const createUser = async (telegram_id: string, walletAddress: string, cha
 }
 
 export const sendTransaction = async (senderTelegram: string, recipientTelegram: string, value: number, message: string) => {
+   console.log('Arbitrary message to test pipeline. ')
    console.log('----------------------- Running new sendTransaction query call -----------------------')
    console.log(`sendTransaction query call - Sender: ${senderTelegram}, Recipient: ${recipientTelegram}, Value: ${value}, Message: ${message}`)
    
