@@ -257,7 +257,8 @@ bot.command('send', async (ctx) => {
         
         const amount: number = Number(args[1])
         console.log(`Amount: ${amount}`)
-        const message = args[2]
+        // const message = args[2]
+        const message = args.slice(2).join(' ')
         console.log(`Message: ${message}`)
         sender = ctx.message.from.username || ''
         
