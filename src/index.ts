@@ -279,8 +279,10 @@ bot.command('send', async (ctx) => {
 // Need to change to uncomment        
         let recipientQuery: any
         try {
+            console.log('Trying to get user by telegram name')
            recipientQuery = await getUserByTGName(recipient)
         } catch {
+            console.log('Trying to get user by first name')
             recipientQuery = await getUserByFirstName(recipient)
         }
          
