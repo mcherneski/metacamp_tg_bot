@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client'
 
 import { message, callbackQuery, channelPost } from 'telegraf/filters'
 import { createWallet } from './utils/createWallet'
-import { awardToken, getActivities, createActivity, createUser, getUserByTGName, sendTransaction } from './utils/queries';
+import { awardToken, getActivities, createActivity, createUser, getUserByFirstName, getUserByTGName, sendTransaction } from './utils/queries';
 
 require('dotenv').config()
 global.fetch = require('node-fetch')
@@ -61,15 +61,29 @@ bot.start( async (ctx) => {
     }
 
     const checkExistingUser = await getUserByTGName(ctx.from.username || '')
+    
+// Uncomment below for name change
+// const checkExistingUserbyName = await getUserByFirstName(ctx.from.first_name || '')
+//     if (checkExistingUserbyName !== "User not found.") {
+//         return ctx.reply('This username is already registered. \n Try /help to see a list of commands.')
+//     }
+
     if (checkExistingUser !== "User not found." && checkExistingUser.telegram_id === ctx.from.username) {
         ctx.session.telegramName === checkExistingUser.telegram_id
         ctx.session.userId === checkExistingUser.id
-        return ctx.reply('This Telegram handle is already registered! \n Try /help to see a list of commands.')
+// Update user's chat ID if they're already in there. 
+        await prisma.user.update({
+            where: { telegram_id: ctx.from.username },
+            data: { chatId: ctx.chat.id.toString()}
+        })
+        return ctx.reply('Registered! \n Try /help to see a list of commands.')
     }
 
-
+// Uncomment the two lines below for name change
     const user = ctx.from.username?.toString() || ''
+    // const userName = ctx.from.first_name.toString()
     ctx.session.telegramName = user
+    // ctx.session.telegramName = userName
     await ctx.reply(`🏝️ Welcome to MetaCash, ${user}! 🌊`)
     await ctx.reply('Hold tight while we create your account...')
     
@@ -127,7 +141,7 @@ bot.command('help', (ctx) => {
 })
 
 bot.command('account', async (ctx) => {
-    const tgusername = ctx.from.username || ''
+    const tgusername = ctx.from.first_name || ''
     try {
         const user = await getUserByTGName(tgusername)
 
@@ -184,7 +198,7 @@ bot.command('createactivity', async (ctx) => {
     console.log('Arguments for new event: ', ctx.args)
     const params = ctx.args
     if ((params.length === 0 )){
-        return ctx.reply('Please provide the recipient and amount. \n Example: /createactivity "Pizza Party" 1300 "Restaurant" "Mike"')
+        return ctx.reply('Please provide the recipient and amount. \n Example: /createactivity "Pizza Party" 1300 "Restaurant"')
     }
     console.log('Payload is : ', params)
     const eventName = params[0]
@@ -241,7 +255,7 @@ bot.command('send', async (ctx) => {
     console.log('Send payload', payload)
 
     if ((args.length === 0 )){
-        return ctx.reply('Please provide the recipient and amount. \n Example: /send @TGHandle (Number (1 to 100)) "Message"')
+        return ctx.reply('Please provide the recipient and amount. \n Example: /send Name (Number (1 to 100)) Message (Optional)')
     }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
@@ -259,9 +273,17 @@ bot.command('send', async (ctx) => {
         // const message = args[2]
         const message = args.slice(2).join(' ')
         console.log(`Message: ${message}`)
+// Need to change uncomment
+        sender = getUserByFirstName(ctx.session.firstName)        
         sender = ctx.message.from.username || ''
-        
-        const recipientQuery = await getUserByTGName(recipient)
+// Need to change to uncomment        
+        let recipientQuery: any
+        try {
+           recipientQuery = await getUserByTGName(recipient)
+        } catch {
+            recipientQuery = await getUserByFirstName(recipient)
+        }
+         
         console.log('Recipient Query: ', recipientQuery)
         if (recipientQuery !== 'User not found.') {
             recipientChatId = recipientQuery.chatId
@@ -269,6 +291,7 @@ bot.command('send', async (ctx) => {
         console.log('Recipient Chat Id: ', recipientChatId)
 
         if (message !== undefined && message !== '') {
+
             console.log('Message detected in args')
             newMessage = `${sender} sent you some MetaCoins with a message: \n ${message}`
             console.log(`User ${sender} is sending ${amount} to ${recipient} with message ${newMessage}.`)
@@ -282,7 +305,7 @@ bot.command('send', async (ctx) => {
                     ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
                 }
             } else {
-                ctx.reply('Error sending message to recipient. Please dm Mike. (@MikeCski) \n The transaction is still processing...')
+                ctx.reply('Recipient did not sign up yet, so I cant message them. 😓 \n The transaction is still processing...')
                 console.log('New message: ', newMessage)
             }
         }
