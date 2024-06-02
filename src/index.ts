@@ -138,7 +138,7 @@ bot.start( async (ctx) => {
 
 bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
-    /send | Example: /send @YaylorMewn 10 "Thanks for the pizza!" ) \n
+    /send | Example: /send @YaylorMewn 10 Thanks for the pizza! \n
     /account - Check your account details. \n
     /schedule - Show today's activity schedule. \n
     /gm - A web 3 neccessity for any bot. \n
@@ -261,7 +261,7 @@ bot.command('send', async (ctx) => {
     console.log('Send payload', payload)
 
     if ((args.length === 0 )){
-        return ctx.reply('Please provide the recipient and amount. \n Example: /send Name (Number (1 to 100)) Message (Optional)')
+        return ctx.reply('Please provide the recipient and amount. \n Example: /send Name Amount Message (Optional)')
     }
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
