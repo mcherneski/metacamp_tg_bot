@@ -120,7 +120,6 @@ bot.command('help', (ctx) => {
     return ctx.reply(`Hello ${ctx.from.username}! Here are the commands you can use: \n
         /send | Example: /send @YaylorMewn 10 "Thanks for the pizza!" ) \n
         /account - Check your account details. \n
-        /createactivity | Example: /createactivity "Pizza Party" 1115 "Restaurant" "Mike" \n
         /schedule - Show today's activity schedule. \n
         /gm - A web 3 neccessity for any bot. \n
         /help - Show this message. \n
