@@ -22,6 +22,12 @@ interface SessionData {
     lastName: string
 }
 
+interface RecipientQuery {
+    telegram_id: string
+    chatId: string
+
+}
+
 interface AppContext extends Context {
     session: SessionData
 }
@@ -281,6 +287,7 @@ bot.command('send', async (ctx) => {
         
         console.log('Trying to get user by telegram name')
         recipientQuery = await getUserByTGName(recipient)
+        console.log('Recipient Query Results: ', recipientQuery)
 
         if (recipientQuery === 'User not found.') {
             console.log(`User not found, trying by first name...`)
