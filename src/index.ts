@@ -278,20 +278,18 @@ bot.command('send', async (ctx) => {
         sender = ctx.message.from.username || ''
 // Need to change to uncomment        
         let recipientQuery: any
-        try {
-            console.log('Trying to get user by telegram name')
-           recipientQuery = await getUserByTGName(recipient)
-        } catch {
+        
+        console.log('Trying to get user by telegram name')
+        recipientQuery = await getUserByTGName(recipient)
+
+        if (recipientQuery.telegram_id === undefined) {
+            console.log(`User not found, trying by first name...`)
             console.log('Trying to get user by first name')
             recipientQuery = await getUserByFirstName(recipient)
-
-            if (recipientQuery.telegram_id === undefined) {
-                console.log('User Found')
-                
-            }
         }
+
          
-        console.log('Recipient Query: ', recipientQuery)
+        console.log('Recipient Query Results: ', recipientQuery)
         if (recipientQuery !== 'User not found.') {
             recipientChatId = recipientQuery.chatId
         }
