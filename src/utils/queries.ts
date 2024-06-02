@@ -107,7 +107,7 @@ export const getUserTransactions = async (telegram_id: string) => {
 
  export const getUserByFirstName = async (name: string) => {
    console.log('----------------- Starting new getUserByTGName command -----------------')
-   const user = await prisma.user.findFirst({ where : {telegram_id: { equals: name, mode: 'insensitive'}}})
+   const user = await prisma.user.findFirst({ where : {firstName: { equals: name, mode: 'insensitive'}}})
 
    if (!user) {
       console.log('User not found')
