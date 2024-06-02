@@ -284,6 +284,11 @@ bot.command('send', async (ctx) => {
         } catch {
             console.log('Trying to get user by first name')
             recipientQuery = await getUserByFirstName(recipient)
+
+            if (recipientQuery.telegram_id === undefined) {
+                console.log('User Found')
+                
+            }
         }
          
         console.log('Recipient Query: ', recipientQuery)
@@ -291,7 +296,7 @@ bot.command('send', async (ctx) => {
             recipientChatId = recipientQuery.chatId
         }
         console.log('Recipient Chat Id: ', recipientChatId)
-
+// Check if message exists
         if (message !== undefined && message !== '') {
 
             console.log('Message detected in args')
@@ -315,11 +320,12 @@ bot.command('send', async (ctx) => {
         try {
             if (sender !== ''){
                 console.log('Sending transaction...')
-                await sendTransaction(sender, recipient, amount, message)
+                // const txRec = recipientQuery.telegram_id
+                await sendTransaction(sender, recipientQuery.telegram_id, amount, message)
                 return ctx.reply(`Sent ${amount} MetaCoins to ${recipient}!`)
             }
         } catch (error){
-            console.log(`Error sending transaction: ${sender}, ${recipient}, ${amount}, ${message}`, error)
+            console.log(`Error sending transaction: ${sender}, ${recipientQuery.telegram_id}, ${amount}, ${message}`, error)
             return ctx.reply('Error. Please DM Mike. (@MikeCski)')
         }
     }
