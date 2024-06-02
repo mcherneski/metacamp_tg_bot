@@ -22,11 +22,13 @@ interface SessionData {
     lastName: string
 }
 
-interface RecipientQuery {
-    telegram_id: string
-    chatId: string
+// TODO: Add type for RecipientQuery
+// interface RecipientQuery {
+//     telegram_id: string
+//     chatId: string
+// }
 
-}
+
 
 interface AppContext extends Context {
     session: SessionData
@@ -264,6 +266,8 @@ bot.command('send', async (ctx) => {
     if ((args.length === 0 )){
         return ctx.reply('Please provide the recipient and amount. \n Example: /send Name Amount Message (Optional)')
     }
+
+
     if (args[0] && typeof args[0] === 'string' &&
         args[1] && !isNaN(Number(args[1]))
         ) {
@@ -276,6 +280,15 @@ bot.command('send', async (ctx) => {
         console.log(`Recipient: ${recipient}`)
         
         const amount: number = Number(args[1])
+
+        if (!Number.isInteger(amount)) {
+            return ctx.reply('Please use a whole number (unsigned integer) as the amount sent.')
+        }
+
+        if (amount < 1 || amount > 100) {
+            return ctx.reply('Please send an amount between 1 and 100')
+        }
+
         console.log(`Amount: ${amount}`)
         // const message = args[2]
         const message = args.slice(2).join(' ')

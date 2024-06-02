@@ -1,6 +1,10 @@
 import { PrismaClient } from '@prisma/client'
+import { z } from 'zod'
+import { sendSchema } from './schemas'
 
 const prisma = new PrismaClient()
+
+
 
 export const createUser = async (telegram_id: string, walletAddress: string, chatId: string, firstName?: string, lastName?: string) => {
    const newUser = await prisma.user.create({
