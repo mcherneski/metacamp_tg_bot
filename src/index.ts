@@ -282,7 +282,7 @@ bot.command('send', async (ctx) => {
         console.log('Trying to get user by telegram name')
         recipientQuery = await getUserByTGName(recipient)
 
-        if (recipientQuery.telegram_id === undefined) {
+        if (recipientQuery === 'User not found.') {
             console.log(`User not found, trying by first name...`)
             console.log('Trying to get user by first name')
             recipientQuery = await getUserByFirstName(recipient)
