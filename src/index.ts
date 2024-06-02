@@ -340,7 +340,7 @@ bot.command('send', async (ctx) => {
             if (sender !== ''){
                 console.log('Sending transaction...')
                 // const txRec = recipientQuery.telegram_id
-                if (sender === recipientQuery.telegram_id){
+                if (sender === recipientQuery.telegram_id || sender === recipientQuery.firstName){
                     return ctx.reply('You cannot send MetaCoins to yourself!')
                 }
                 await sendTransaction(sender, recipientQuery.telegram_id, amount, message)
