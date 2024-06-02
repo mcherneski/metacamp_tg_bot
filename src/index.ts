@@ -147,16 +147,17 @@ bot.command('help', (ctx) => {
 })
 
 bot.command('account', async (ctx) => {
-    const tgusername = ctx.from.first_name || ''
+    const tgusername = ctx.from.username || ''
     try {
         const user = await getUserByTGName(tgusername)
-
         if (user !== "User not found.") {
         return ctx.reply(`Your account details: \n
             Username: ${user.telegram_id} \n
             Balance: ${user.balance} \n
             Received: ${user.received} \n
         `)
+        } else {
+            return ctx.reply('User not found.')
         }
 
     } catch (error) {
