@@ -190,7 +190,7 @@ bot.command('schedule', async (ctx) => {
         const schedule = todaysEvents.map(event => {
             const eventDate = new Date(event.date)
             const timeStr = eventDate.toLocaleTimeString('en-us', {hour: '2-digit', minute: '2-digit', hour12: true})
-            return `${event.name} starting at ${timeStr} in ${event.location} \n \n`
+            return `${event.name} starting at ${timeStr} @ ${event.location} \n \n`
         }).join('\n')
         
         return ctx.reply(`Today's Schedule: \n \n ${schedule}`)
